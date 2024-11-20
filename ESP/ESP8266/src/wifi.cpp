@@ -1,5 +1,7 @@
 #include "wifi.h"
 
+
+
 int connect_to_wifi() {
     int cpt = 0;
     // attempt to connect to WiFi network:
@@ -8,7 +10,7 @@ int connect_to_wifi() {
     while (WiFi.begin(SECRET_SSID, SECRET_PASS) != WL_CONNECTED) {
         // failed, retry
         if (cpt>50){
-            return -1;
+            return 0;
         }
         Serial.print(".");
         delay(5000);
@@ -18,5 +20,5 @@ int connect_to_wifi() {
     Serial.println("You're connected to the network");
     Serial.println();
 
-    return 0;
+    return 1;
 }

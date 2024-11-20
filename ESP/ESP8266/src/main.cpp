@@ -1,16 +1,10 @@
 #include <Arduino.h>
-#include <ArduinoMqttClient.h>
-#include <ESP8266WiFi.h>
 #include "wifi.h"
+#include "mqtt.h"
 
 
 
-WiFiClient wifiClient;
-MqttClient mqttClient(wifiClient);
 
-const char broker[] = "172.20.10.4";
-int        port     = 1883;
-const char topic[]  = "test";
 
 void setup() {
   // put your setup code here, to run once:
@@ -20,30 +14,29 @@ void setup() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
 
-  if (connect_to_wifi() != 0) {
+  if (!connect_to_wifi()) {
     Serial.println("Failed to connect to WiFi");
     while (1);
   }
 
-  Serial.print("Attempting to connect to the MQTT broker: ");
-  Serial.println(broker);
+  if (!mqttClient.connect(broker, port)) {  // Faire avec mon mqtt connect avec une classe, comme ça un client pour ecouter adresses et un autre pour envoyer données
 
-  if (!mqttClient.connect(broker, port)) {
-    Serial.print("MQTT connection failed! Error code = ");
-    Serial.println(mqttClient.connectError());
+        Serial.print("MQTT connection failed! Error code = ");
+        Serial.println(mqttClient.connectError());
 
-    while (1);
-  }
-
-  Serial.println("You're connected to the MQTT broker!");
-  Serial.println();
+        while (1);
+    }
 
   Serial.print("Subscribing to topic: ");
   Serial.println(topic);
   Serial.println();
 
   // subscribe to a topic
+  mqttClient.beginMessage(topic);
+  mqttClient.print("Hello, world!");
+  mqttClient.endMessage();
   mqttClient.subscribe(topic);
+  
 
   // topics can be unsubscribed using:
   // mqttClient.unsubscribe(topic);
