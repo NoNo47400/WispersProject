@@ -30,7 +30,7 @@ client.on_message = on_message
 # Connexion au broker MQTT
 broker_ip = "172.20.10.2"
 broker_port = 1234
-client.connect(broker_ip, broker_ip)
+client.connect(broker_ip, broker_port)
 
 # Souscription au topic "test"
 client.subscribe("test")
