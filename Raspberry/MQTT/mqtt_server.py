@@ -1,4 +1,6 @@
 import paho.mqtt.client as mqtt
+import threading
+import queue
 import time
 from datetime import datetime
 
@@ -10,6 +12,10 @@ GET_ADDRESSES_TOPIC = "get_addresses"  # Topic pour les demandes d'adresses
 ADDRESSES_TOPIC = "addresses"  # Topic pour envoyer les adresses
 ADDRESS_FILE = "../addresses.txt"  # Fichier contenant les adresses
 DATA_DIR = "../Data"  # Dossier où les fichiers seront sauvegardés
+
+# Files d'attente pour la communication entre threads
+data_queue = queue.Queue()
+addresses_queue = queue.Queue()
 
 # Fonction pour charger les adresses depuis le fichier
 def load_addresses():
@@ -27,26 +33,46 @@ def save_data_to_file(data):
         file.write(data + "\n")
     print(f"Data saved to {filename}")
 
+# Thread pour gérer les messages de type 'get_addresses'
+def handle_get_addresses(client):
+    while True:
+        try:
+            # Attendre un message dans la file d'attente
+            msg = addresses_queue.get(timeout=1)
+            if msg == "process_addresses":
+                send_addresses(client)
+        except queue.Empty:
+            continue
+
+# Thread pour gérer les messages de type 'data'
+def handle_data():
+    while True:
+        try:
+            # Attendre un message dans la file d'attente
+            msg = data_queue.get(timeout=1)
+            save_data_to_file(msg)
+        except queue.Empty:
+            continue
+
+# Fonction pour envoyer les adresses ligne par ligne sur le topic 'addresses'
+def send_addresses(client):
+    addresses = load_addresses()
+    for address in addresses:
+        client.publish(ADDRESSES_TOPIC, address)
+        print(f"Sent address: {address}")
+        time.sleep(1)  # Pause d'une seconde entre chaque envoi pour éviter de surcharger le broker
+
 # Fonction de traitement des messages MQTT
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode("utf-8")
     print(f"Received message on topic '{topic}': {payload}")
 
-    # Si le message provient du topic 'data', on sauvegarde les données
+    # Ajouter les messages dans les files d'attente appropriées
     if topic == DATA_TOPIC:
-        save_data_to_file(payload)
-    
-    # Si le message provient du topic 'get_addresses', on renvoie les adresses
+        data_queue.put(payload)  # Ajouter les données reçues à la file data_queue
     elif topic == GET_ADDRESSES_TOPIC:
-        send_addresses(client)
-
-# Fonction pour envoyer les adresses sur le topic 'addresses'
-def send_addresses(client):
-    addresses = load_addresses()
-    addresses_payload = ";".join(addresses)  # Joindre les adresses avec un ';'
-    client.publish(ADDRESSES_TOPIC, addresses_payload)
-    print(f"Sent addresses: {addresses_payload}")
+        addresses_queue.put("process_addresses")  # Signaler au thread addresses de traiter
 
 # Initialisation du client MQTT
 client = mqtt.Client()
@@ -57,23 +83,24 @@ client.on_message = on_message
 # Connexion au broker MQTT
 client.connect(BROKER, PORT, 60)
 
-# Charger les adresses à surveiller
-addresses = load_addresses()
-
 # S'abonner aux topics 'data' et 'get_addresses'
 client.subscribe(DATA_TOPIC)
 client.subscribe(GET_ADDRESSES_TOPIC)
 
-# Boucle principale pour recevoir des messages MQTT
+# Lancer les threads pour les différentes tâches
+addresses_thread = threading.Thread(target=handle_get_addresses, args=(client,))
+data_thread = threading.Thread(target=handle_data)
+
+addresses_thread.start()
+data_thread.start()
+
 try:
+    # Démarrer la boucle MQTT dans le thread principal
     print("Starting MQTT client loop...")
-    client.loop_start()
-
-    # Attendre que les messages arrivent et les traiter
-    while True:
-        time.sleep(1)  # Mettre en pause pour éviter d'utiliser trop de CPU
-
+    client.loop_forever()
 except KeyboardInterrupt:
     print("Exiting...")
     client.loop_stop()  # Arrêter la boucle client MQTT proprement
     client.disconnect()  # Déconnexion propre du broker
+    addresses_thread.join()
+    data_thread.join()
