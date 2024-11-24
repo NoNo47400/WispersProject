@@ -98,6 +98,7 @@ public:
     }
 
     void requestAddresses() {
+        Serial.println("Request addresses");
         mqttHandler.publish("get_addresses", deviceID);
     }
 
@@ -131,6 +132,7 @@ public:
     void handleIncomingMessages() {
         String topic;
         String mqttpayload;
+        delay(10); // Ajout d'un petit délai pour éviter les problèmes de lecture (car ça marche s'il y a un print)
         if (mqttHandler.parseMessage(topic, mqttpayload)) {
             Serial.print("Received message on topic: ");
             Serial.print(topic);
@@ -162,7 +164,14 @@ public:
 
     void handleGetAddressesState() {
         if (!addressesReceived) {
-            requestAddresses();
+            static unsigned long lastRequestTime = 0;
+            const unsigned long requestInterval = 1000; // 1 second
+
+            unsigned long currentTime = millis();
+            if (currentTime - lastRequestTime >= requestInterval) {
+                requestAddresses();
+                lastRequestTime = currentTime;
+            }
         } else {
             addressesReceived = false;
             currentState = GetData;
