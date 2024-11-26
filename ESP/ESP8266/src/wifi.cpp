@@ -1,8 +1,6 @@
 #include "wifi.h"
 
-
-
-int connect_to_wifi() {
+int WifiClient::connect_to_wifi() {
     int cpt = 0;
     // attempt to connect to WiFi network:
     Serial.print("Attempting to connect to WPA SSID: ");
@@ -22,3 +20,5 @@ int connect_to_wifi() {
 
     return 1;
 }
+
+

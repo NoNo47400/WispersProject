@@ -3,6 +3,7 @@ import threading
 import queue
 import time
 from datetime import datetime
+import os
 
 # Paramètres de configuration
 BROKER = "172.20.10.2"
@@ -17,6 +18,12 @@ DATA_DIR = "../Data"  # Dossier où les fichiers seront sauvegardés
 data_queue = queue.Queue()
 addresses_queue = queue.Queue()
 
+# Créer le dossier s'il n'existe pas
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# Nom du fichier de session pour enregistrer les données
+SESSION_FILENAME = f"{DATA_DIR}/data_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+
 # Fonction pour charger les adresses depuis le fichier
 def load_addresses():
     with open(ADDRESS_FILE, "r") as file:
@@ -25,13 +32,9 @@ def load_addresses():
 
 # Fonction pour enregistrer les données dans un fichier texte
 def save_data_to_file(data):
-    # Créer un nom de fichier basé sur la date et l'heure actuelles
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = f"{DATA_DIR}/{timestamp}.txt"
-
-    with open(filename, "a") as file:
+    with open(SESSION_FILENAME, "a") as file:  # Utilise le fichier unique
         file.write(data + "\n")
-    print(f"Data saved to {filename}")
+    print(f"Data appended to {SESSION_FILENAME}")
 
 # Thread pour gérer les messages de type 'get_addresses'
 def handle_get_addresses(client):

@@ -9,6 +9,9 @@
 #define SECRET_SSID "iPhone de Noel"
 #define SECRET_PASS "1234567890"
 
-int connect_to_wifi(void);
+class WifiClient {
+    public:
+        int connect_to_wifi(void);
+};
 
 #endif
