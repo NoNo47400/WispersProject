@@ -1,7 +1,9 @@
 Time resolution is 1 ps
+Note: Assertion violation
+Time: 465 ns  Iteration: 3  Process: /create_request_pdu_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/create_request_pdu_sim.vhd
 Note: Simulation complete.
-Time: 495 ns  Iteration: 0  Process: /nibble_crc_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/nibble_crc_sim.vhd
+Time: 565 ns  Iteration: 0  Process: /create_request_pdu_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/create_request_pdu_sim.vhd
+Note: Assertion violation
+Time: 465 ns  Iteration: 3  Process: /create_request_pdu_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/create_request_pdu_sim.vhd
 Note: Simulation complete.
-Time: 495 ns  Iteration: 0  Process: /nibble_crc_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/nibble_crc_sim.vhd
-Note: Simulation complete.
-Time: 495 ns  Iteration: 0  Process: /nibble_crc_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/nibble_crc_sim.vhd
+Time: 565 ns  Iteration: 0  Process: /create_request_pdu_sim/stimulus  File: C:/Innovative Project/WhisperProject/VHDL/Rubee_Protocol/Rubee_Protocol.srcs/sim_1/new/create_request_pdu_sim.vhd
