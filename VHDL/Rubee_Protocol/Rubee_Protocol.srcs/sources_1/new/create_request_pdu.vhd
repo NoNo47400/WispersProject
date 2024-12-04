@@ -122,8 +122,8 @@ begin
                         done_sig <= '1';
                         active <= '0';
                         fcs_start <= '0';
-                    else
-                        pdu_out <= buffer_sig;
+                    --else
+                    --    pdu_out <= buffer_sig;
                     end if;
                 end if;
             end if;
@@ -135,4 +135,5 @@ begin
         end if;
     end process;
     done <= done_sig;
+    pdu_out <= buffer_sig;
 end Behavioral;
