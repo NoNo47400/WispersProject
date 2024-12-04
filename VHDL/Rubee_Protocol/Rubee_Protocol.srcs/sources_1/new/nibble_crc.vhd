@@ -1,3 +1,17 @@
+----------------------------------------------------------------------------------
+-- Company: INSA Toulouse
+-- Engineer: Gauché Clément
+-- 
+-- Create Date: 11/20/2024 02:00:00 PM
+-- Design Name: Rubee_v0.1
+-- Module Name: nibble_crc - Behavioral
+-- Project Name: Wisper
+-- Target Devices: Basys3
+-- Description: 
+--   This module computes the CRC for nibbles (4-bit data) as part of the Rubee Protocol.
+-- 
+----------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;

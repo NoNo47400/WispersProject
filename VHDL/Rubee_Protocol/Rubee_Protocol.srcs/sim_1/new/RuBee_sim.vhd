@@ -1,6 +1,15 @@
 ----------------------------------------------------------------------------------
--- RuBee_sim.vhd
--- Simulation file to test the RuBee module.
+-- Company: INSA Toulouse
+-- Engineer: Gauché Clément
+-- 
+-- Create Date: 12/04/2024 15:50:15 AM
+-- Design Name: Rubee_v0.1
+-- Module Name: RuBee - Behavioral
+-- Project Name: Wisper
+-- Target Devices: Basys3
+-- Tool Versions: 
+-- Description : 
+--   This module simulates the RuBee module to verify its functionality.
 ----------------------------------------------------------------------------------
 
 library IEEE;

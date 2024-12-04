@@ -7,7 +7,9 @@
 -- Module Name: create_request_pdu - Behavioral
 -- Project Name: Wisper
 -- Target Devices: Basys3
--- Additional Comments:
+-- Description:
+--      This module creates Protocol Data Units (PDU) for the Rubee Protocol.
+--
 ----------------------------------------------------------------------------------
 
 

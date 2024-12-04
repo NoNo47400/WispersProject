@@ -9,7 +9,9 @@
 -- Target Devices: Basys3
 -- Tool Versions: 
 -- Description :
--- 
+--      This module interfaces and uses the create_request_pdu module to create
+--      Protocol Data Units (PDU) for the Rubee Protocol.
+--
 ----------------------------------------------------------------------------------
 
 

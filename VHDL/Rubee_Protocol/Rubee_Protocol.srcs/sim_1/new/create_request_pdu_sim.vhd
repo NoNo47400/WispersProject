@@ -7,7 +7,9 @@
 -- Module Name: create_request_pdu - Behavioral
 -- Project Name: Wisper
 -- Target Devices: Basys3
--- Additional Comments:
+-- Description:
+--    This module simulates the create_request_pdu module to verify its functionality.
+--
 ----------------------------------------------------------------------------------
 
 library ieee;
