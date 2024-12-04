@@ -1,0 +1,7 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../Rubee_Protocol.srcs/sources_1/new/nibble_crc.vhd" \
+"../../../../Rubee_Protocol.srcs/sim_1/new/nibble_crc_sim.vhd" \
+
+# Do not sort compile order
+nosort
