@@ -1,0 +1,151 @@
+Circuit: * C:\Users\alixc\Desktop\INSA\5A\Wispers Doc\Spice\Transmission.asc
+
+Vb0: Removing PWL point (1e-007,3.3)
+Vb0: Removing PWL point (1.4e-006,0)
+Vb0: Removing PWL point (2.6e-006,3.3)
+Vb0: Removing PWL point (3.9e-006,0)
+Vb0: Removing PWL point (5.1e-006,3.3)
+Vb0: Removing PWL point (6.3e-006,0)
+Vb0: Removing PWL point (7.6e-006,3.3)
+Vb0: Removing PWL point (8.8e-006,0)
+Vb0: Removing PWL point (1.01e-005,3.3)
+Vb0: Removing PWL point (1.13e-005,0)
+Vb1: Removing PWL point (1e-007,0)
+Vb1: Removing PWL point (4e-007,3.3)
+Vb1: Removing PWL point (1.6e-006,0)
+Vb1: Removing PWL point (2.8e-006,3.3)
+Vb1: Removing PWL point (4.1e-006,0)
+Vb1: Removing PWL point (5.3e-006,3.3)
+Vb1: Removing PWL point (6.3e-006,3.3)
+Vb1: Removing PWL point (6.6e-006,0)
+Vb1: Removing PWL point (7.8e-006,3.3)
+Vb1: Removing PWL point (9e-006,0)
+Vb1: Removing PWL point (1.03e-005,3.3)
+Vb1: Removing PWL point (1.15e-005,0)
+Vb1: Removing PWL point (1.23e-005,3.3)
+Vb2: Removing PWL point (5e-007,3.3)
+Vb2: Removing PWL point (1.7e-006,0)
+Vb2: Removing PWL point (3e-006,3.3)
+Vb2: Removing PWL point (4.2e-006,0)
+Vb2: Removing PWL point (5.4e-006,3.3)
+Vb2: Removing PWL point (6.7e-006,0)
+Vb2: Removing PWL point (7.9e-006,3.3)
+Vb2: Removing PWL point (9.2e-006,0)
+Vb2: Removing PWL point (1.04e-005,3.3)
+Vb2: Removing PWL point (1.16e-005,0)
+Vb3: Removing PWL point (2e-007,3.3)
+Vb3: Removing PWL point (6e-007,3.3)
+Vb3: Removing PWL point (1e-006,0)
+Vb3: Removing PWL point (1.8e-006,0)
+Vb3: Removing PWL point (2.3e-006,0)
+Vb3: Removing PWL point (3.1e-006,3.3)
+Vb3: Removing PWL point (3.6e-006,0)
+Vb3: Removing PWL point (4.3e-006,0)
+Vb3: Removing PWL point (4.9e-006,0)
+Vb3: Removing PWL point (5.5e-006,3.3)
+Vb3: Removing PWL point (6e-006,3.3)
+Vb3: Removing PWL point (6.4e-006,0)
+Vb3: Removing PWL point (6.8e-006,0)
+Vb3: Removing PWL point (7.2e-006,3.3)
+Vb3: Removing PWL point (8e-006,3.3)
+Vb3: Removing PWL point (8.5e-006,3.3)
+Vb3: Removing PWL point (9.3e-006,0)
+Vb3: Removing PWL point (9.8e-006,3.3)
+Vb3: Removing PWL point (1.05e-005,3.3)
+Vb3: Removing PWL point (1.11e-005,3.3)
+Vb3: Removing PWL point (1.17e-005,0)
+Vb3: Removing PWL point (1.22e-005,0)
+Vb4: Removing PWL point (5e-007,3.3)
+Vb4: Removing PWL point (1.1e-006,3.3)
+Vb4: Removing PWL point (2.4e-006,0)
+Vb4: Removing PWL point (2.9e-006,3.3)
+Vb4: Removing PWL point (3.6e-006,0)
+Vb4: Removing PWL point (4.9e-006,3.3)
+Vb4: Removing PWL point (5.6e-006,3.3)
+Vb4: Removing PWL point (6.1e-006,3.3)
+Vb4: Removing PWL point (6.7e-006,0)
+Vb4: Removing PWL point (7.3e-006,0)
+Vb4: Removing PWL point (8.6e-006,3.3)
+Vb4: Removing PWL point (9.1e-006,0)
+Vb4: Removing PWL point (9.8e-006,3.3)
+Vb4: Removing PWL point (1.11e-005,0)
+Vb4: Removing PWL point (1.18e-005,0)
+Vb5: Removing PWL point (2e-007,3.3)
+Vb5: Removing PWL point (9e-007,0)
+Vb5: Removing PWL point (1.2e-006,3.3)
+Vb5: Removing PWL point (1.6e-006,0)
+Vb5: Removing PWL point (2.2e-006,3.3)
+Vb5: Removing PWL point (3.7e-006,3.3)
+Vb5: Removing PWL point (4.3e-006,0)
+Vb5: Removing PWL point (4.9e-006,3.3)
+Vb5: Removing PWL point (5.3e-006,0)
+Vb5: Removing PWL point (5.9e-006,3.3)
+Vb5: Removing PWL point (6.4e-006,0)
+Vb5: Removing PWL point (7.1e-006,3.3)
+Vb5: Removing PWL point (7.4e-006,0)
+Vb5: Removing PWL point (7.8e-006,3.3)
+Vb5: Removing PWL point (8.4e-006,0)
+Vb5: Removing PWL point (9.9e-006,0)
+Vb5: Removing PWL point (1.05e-005,3.3)
+Vb5: Removing PWL point (1.11e-005,0)
+Vb5: Removing PWL point (1.15e-005,3.3)
+Vb5: Removing PWL point (1.21e-005,0)
+Vb6: Removing PWL point (1e-006,0)
+Vb6: Removing PWL point (1.9e-006,0)
+Vb6: Removing PWL point (2.4e-006,3.3)
+Vb6: Removing PWL point (3e-006,3.3)
+Vb6: Removing PWL point (3.6e-006,3.3)
+Vb6: Removing PWL point (4.3e-006,0)
+Vb6: Removing PWL point (4.8e-006,0)
+Vb6: Removing PWL point (7.2e-006,3.3)
+Vb6: Removing PWL point (8.1e-006,3.3)
+Vb6: Removing PWL point (8.6e-006,0)
+Vb6: Removing PWL point (9.2e-006,0)
+Vb6: Removing PWL point (9.8e-006,0)
+Vb6: Removing PWL point (1.05e-005,3.3)
+Vb6: Removing PWL point (1.1e-005,3.3)
+Vb7: Removing PWL point (2e-007,3.3)
+Vb7: Removing PWL point (8e-007,0)
+Vb7: Removing PWL point (1.5e-006,3.3)
+Vb7: Removing PWL point (2.5e-006,0)
+Vb7: Removing PWL point (3e-006,3.3)
+Vb7: Removing PWL point (3.7e-006,0)
+Vb7: Removing PWL point (4.7e-006,3.3)
+Vb7: Removing PWL point (5e-006,0)
+Vb7: Removing PWL point (6e-006,3.3)
+Vb7: Removing PWL point (6.4e-006,0)
+Vb7: Removing PWL point (7e-006,3.3)
+Vb7: Removing PWL point (7.7e-006,0)
+Vb7: Removing PWL point (8.7e-006,3.3)
+Vb7: Removing PWL point (9.2e-006,0)
+Vb7: Removing PWL point (9.9e-006,3.3)
+Vb7: Removing PWL point (1.09e-005,0)
+Vb7: Removing PWL point (1.12e-005,3.3)
+Vb7: Removing PWL point (1.22e-005,0)
+WARNING: Node N002 is floating.
+WARNING: Node N001 is floating.
+
+WARNING: Less than two connections to node N002.  This node is used by R17.
+WARNING: Less than two connections to node N001.  This node is used by C2.
+WARNING: Less than two connections to node N004.  This node is used by V1.
+WARNING: Less than two connections to node N003.  This node is used by V2.
+WARNING: Less than two connections to node NC_01.  This node is used by R19.
+Direct Newton iteration for .op point succeeded.
+
+Date: Wed Dec 04 22:14:42 2024
+Total elapsed time: 0.044 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 2911
+traniter = 2908
+tranpoints = 1455
+accept = 1455
+rejected = 0
+matrix size = 33
+fillins = 0
+solver = Normal
+Matrix Compiler1: 1.00 KB object code size  0.2/0.1/[0.1]
+Matrix Compiler2: 2.04 KB object code size  0.1/0.2/[0.1]
+

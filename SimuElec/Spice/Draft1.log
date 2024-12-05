@@ -1,0 +1,20 @@
+Circuit: * C:\Users\alixc\Desktop\INSA\5A\Wispers Doc\Spice\Draft1.asc
+
+Direct Newton iteration for .op point succeeded.
+
+Date: Tue Dec 03 10:12:11 2024
+Total elapsed time: 0.031 seconds.
+
+tnom = 27
+temp = 27
+method = trap
+totiter = 22
+traniter = 0
+tranpoints = 0
+accept = 0
+rejected = 0
+matrix size = 11
+fillins = 7
+solver = Normal
+Matrix Compiler1:      36 opcodes
+Matrix Compiler2: 993 bytes object code size
