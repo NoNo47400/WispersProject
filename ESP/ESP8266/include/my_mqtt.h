@@ -12,11 +12,11 @@ private:
     WiFiClient wifiClient;          // Client WiFi pour la communication réseau
     MqttClient mqttClient;          // Client MQTT pour les interactions avec le broker
     String broker;                  // Adresse du broker MQTT
-    int port;                       // Port du broker MQTT
+    uint16_t port;                       // Port du broker MQTT
 
 public:
     // Constructeur
-    MqttHandler(const char* broker, int port);
+    MqttHandler(const char* broker, uint16_t port);
 
     // Méthode pour se connecter au broker MQTT
     bool connect();

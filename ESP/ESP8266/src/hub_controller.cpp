@@ -1,8 +1,8 @@
 #include "hub_controller.h"
 
-HubController::HubController(const char* broker, int port, const String& deviceID)
+HubController::HubController(const char* broker, uint16_t port, const String& deviceID)
     : mqttHandler(broker, port), deviceID(deviceID), currentAddressIndex(0),
-        addressesReceived(false), data("", "", false) {}
+        addressesReceived(false) {}
 
 void HubController::setup() {
     if (!mqttHandler.connect()) {
@@ -29,8 +29,14 @@ void HubController::processAddresses(const String& message) {
 }
 
 String HubController::getData(String& address) {
-    //TODO avec Rubee
-    return "1;" + address + ";2000;1";// 1 pour l'adresse du hub, 10 pour l'adresse du patch, 2000 pour la valeur, 1 pour dire que c'est la dernière valeur
+    // Use RubeeProtocol to get data
+    // Example implementation
+    nibble protocol_selector = 0x1; // Example protocol selector
+    std::vector<nibble> address_nibbles(address.begin(), address.end());
+    DataField dataField;
+    RequestPDU pdu = rubeeProtocol.create_request_pdu(protocol_selector, address_nibbles, dataField);
+    rubeeProtocol.send_request_pdu(pdu);
+    return "1;" + address + ";2000;1"; // Example return value
 }
 
 void HubController::sendData(const String& address, const String& data) {
@@ -92,7 +98,7 @@ void HubController::handleGetAddressesState() {
 void HubController::handleGetDataState(std::list<String>& get_payload) {
     int is_finished_local = 0;
     while (!is_finished_local) {
-        if (currentAddressIndex >= addressList.size()) {
+        if (currentAddressIndex >= static_cast<int>(addressList.size())) {
             Serial.println("Error: currentAddressIndex out of bounds");
             break;
         }
@@ -108,7 +114,7 @@ void HubController::handleGetDataState(std::list<String>& get_payload) {
 void HubController::handleSendDataState(std::list<String>& payload_to_send) {
     processData(payload_to_send);
     currentAddressIndex++;
-    if (currentAddressIndex >= addressList.size()) {
+    if (currentAddressIndex >= static_cast<int>(addressList.size())) {
         // Reboucler sur l'étape 1
         addressesReceived = false;
         currentAddressIndex = 0;
@@ -128,8 +134,11 @@ void HubController::processData(std::list<String>& payload_to_process) {
     while (!payload_to_process.empty()) {
         String first_data = *payload_to_process.begin();
         payload_to_process.pop_front();
-        data = parseData(first_data);
-        sendData(data.address, data.data);
+        // Parse data and send using RubeeProtocol
+        // Example implementation
+        std::vector<nibble> data_nibbles(first_data.begin(), first_data.end());
+        DataField dataField = rubeeProtocol.get_data_field(data_nibbles);
+        sendData(dataField.patch_address.to_string().c_str(), dataField.data->to_string().c_str());
     }
 }
 
@@ -156,7 +165,7 @@ std::vector<String> HubController::splitAddresses(const String& message) {
         start = end + 1;
         end = message.indexOf(';', start);
     }
-    if (start < message.length()) {
+    if (start < static_cast<int>(message.length())) {
         addresses.push_back(message.substring(start));
     } else {
         // Invalid format
@@ -164,27 +173,4 @@ std::vector<String> HubController::splitAddresses(const String& message) {
         addresses.clear();
     }
     return addresses;
-}
-
-DataField HubController::parseData(const String& payload_to_parse) {
-    int firstSep = payload_to_parse.indexOf(';');
-    int secondSep = payload_to_parse.indexOf(';', firstSep + 1);
-    int thirdSep = payload_to_parse.indexOf(';', secondSep + 1);
-
-    if (firstSep == -1 || secondSep == -1 || thirdSep == -1) {
-        // Payload format is incorrect
-        return DataField("", "", false);
-    }
-
-    String hubAddress = payload_to_parse.substring(0, firstSep);
-    String patchAddress = payload_to_parse.substring(firstSep + 1, secondSep);
-    String data = payload_to_parse.substring(secondSep + 1, thirdSep);
-    bool finished = (payload_to_parse.substring(thirdSep + 1) == "1");
-
-    if (hubAddress != deviceID) {
-        // Payload is not for this hub
-        return DataField("", "", false);
-    }
-
-    return DataField(patchAddress, data, finished);
 }

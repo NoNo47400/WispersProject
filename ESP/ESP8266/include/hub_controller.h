@@ -3,8 +3,8 @@
 
 #include <Arduino.h> 
 #include "my_mqtt.h"
-#include "data_field.h"
 #include <list>
+#include "rubee_protocol.h"
 
 // Enumération des états possibles
 enum State {
@@ -22,12 +22,12 @@ private:
     int currentAddressIndex;                   // Index de l'adresse en cours
     std::vector<String> addressList;           // Liste des adresses individuelles
     bool addressesReceived;                    // Indicateur de réception des adresses
-    DataField data;                            // Données en cours de traitement
     State currentState; // État actuel de la machine d'états
 
 public:
+    RubeeProtocol rubeeProtocol;    
     // Constructeur
-    HubController(const char* broker, int port, const String& deviceID);
+    HubController(const char* broker, uint16_t port, const String& deviceID);
 
     // Méthodes principales
     void setup();
@@ -44,11 +44,9 @@ private:
     void requestAddresses();
     void processAddresses(const String& message);
     std::vector<String> splitAddresses(const String& message);
-    DataField parseData(const String& payload_to_parse);
     String getData(String& address);
     void sendData(const String& address, const String& data);
     void processData(std::list<String>& payload_to_process);
 };
 
-
-#endif 
+#endif

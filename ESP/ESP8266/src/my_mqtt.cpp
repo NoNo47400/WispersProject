@@ -1,6 +1,6 @@
 #include "my_mqtt.h"
 
-MqttHandler::MqttHandler(const char* broker, int port)
+MqttHandler::MqttHandler(const char* broker, uint16_t port)
     : broker(broker), port(port), mqttClient(wifiClient) {}
 
 bool MqttHandler::connect() {
