@@ -6,31 +6,31 @@
 #include <ArduinoMqttClient.h>
 #include "wifi.h"
 
-// Classe pour gérer les interactions MQTT
+// Class to handle MQTT interactions
 class MqttHandler {
 private:
-    WiFiClient wifiClient;          // Client WiFi pour la communication réseau
-    MqttClient mqttClient;          // Client MQTT pour les interactions avec le broker
-    String broker;                  // Adresse du broker MQTT
-    uint16_t port;                       // Port du broker MQTT
+    WiFiClient wifiClient;          // WiFi client for network communication
+    MqttClient mqttClient;          // MQTT client for broker interactions
+    String broker;                  // MQTT broker address
+    uint16_t port;                  // MQTT broker port
 
 public:
-    // Constructeur
+    // Constructor
     MqttHandler(const char* broker, uint16_t port);
 
-    // Méthode pour se connecter au broker MQTT
+    // Connect to the MQTT broker
     bool connect();
 
-    // Méthode pour s'abonner à un topic
+    // Subscribe to a topic
     void subscribe(const char* topic);
 
-    // Méthode pour publier un message sur un topic
+    // Publish a message to a topic
     void publish(const String& topic, const String& message);
 
-    // Méthode pour lire et analyser les messages MQTT
+    // Parse incoming MQTT messages
     bool parseMessage(String& topic, String& payload_to_parse);
 
-    // Méthode pour garder la connexion MQTT active
+    // Keep the MQTT connection alive
     void poll();
 };
 

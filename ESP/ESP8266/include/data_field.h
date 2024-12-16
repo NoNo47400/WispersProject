@@ -1,33 +1,31 @@
 #ifndef MY_DATA_FIELD_H
 #define MY_DATA_FIELD_H
 
-#include <Arduino.h> // Nécessaire pour utiliser String dans les environnements Arduino
+#include <Arduino.h>
 #include <bitset>
+#include <vector>
 
-using nibble = std::bitset<4>; // Création du type nibble sur 4bits
+using nibble = std::bitset<4>;
 
-// Classe pour représenter les champs des données
 class DataField {
 public:
-    nibble data_length[2]; // Longueur des données
-    nibble patch_address;   // Adresse associée aux données
-    nibble* data;      // Contenu des données
-    nibble isFinished;  // Indique si le traitement des données est terminé
+    std::vector<nibble> data_length;  // Changed to vector
+    nibble patch_address;
+    std::vector<nibble> data;         // Changed to vector
+    nibble isFinished;
 
-    // Constructeur
-    DataField() {
+    // Constructor
+    DataField() : data_length(2), patch_address(0), isFinished(0) {
         data_length[0] = 0;
         data_length[1] = 0;
-        patch_address = 0;
-        data = nullptr;
-        isFinished = 0;
     }
 
-    DataField(nibble len[2], nibble addr, nibble* d, nibble finished)
-        : patch_address(addr), data(d), isFinished(finished) {
-        data_length[0] = len[0];
-        data_length[1] = len[1];
-    }
+    // Copy constructor
+    DataField(const DataField& other) : 
+        data_length(other.data_length),
+        patch_address(other.patch_address),
+        data(other.data),
+        isFinished(other.isFinished) {}
 };
 
 #endif

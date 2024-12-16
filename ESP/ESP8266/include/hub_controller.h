@@ -6,45 +6,47 @@
 #include <list>
 #include "rubee_protocol.h"
 
-// Enumération des états possibles
+// Enumeration of possible states
 enum State {
-    GetAddresses,   // Obtenir les adresses
-    GetData,       // Récupérer les données
-    SendData       // Envoyer les données
+    GetAddresses,   // Get addresses
+    GetData,       // Retrieve data
+    SendData       // Send data
 };
 
-// Classe principale pour orchestrer les processus du hub
+// Main class to orchestrate the hub processes
 class HubController {
 private:
-    MqttHandler mqttHandler;                   // Gestionnaire MQTT
-    String deviceID;                           // ID unique du hub
-    String addresses;                          // Liste brute des adresses reçues
-    int currentAddressIndex;                   // Index de l'adresse en cours
-    std::vector<String> addressList;           // Liste des adresses individuelles
-    bool addressesReceived;                    // Indicateur de réception des adresses
-    State currentState; // État actuel de la machine d'états
+    MqttHandler mqttHandler;                   // MQTT handler
+    String deviceID;                           // Unique ID of the hub
+    String addresses;                          // Raw list of received addresses
+    int currentAddressIndex;                   // Index of the current address
+    std::vector<String> addressList;           // List of individual addresses
+    bool addressesReceived;                    // Indicator of address reception
+    State currentState; // Current state of the state machine
 
 public:
-    RubeeProtocol rubeeProtocol;    
-    // Constructeur
+    RubeeProtocol rubeeProtocol;  
+
+    // Constructor
     HubController(const char* broker, uint16_t port, const String& deviceID);
 
-    // Méthodes principales
+    // Main methods
     void setup();
     void handleState();
     void handleIncomingMessages();
 
 private:
-    // Gestion des états
+    // State management
     void handleGetAddressesState();
     void handleGetDataState(std::list<String>& get_payload);
     void handleSendDataState(std::list<String>& payload_to_send);
 
-    // Méthodes auxiliaires
+    // Auxiliary methods
     void requestAddresses();
     void processAddresses(const String& message);
     std::vector<String> splitAddresses(const String& message);
-    String getData(String& address);
+    void requestData(String& address);
+    bool getData(DataField* dataField);
     void sendData(const String& address, const String& data);
     void processData(std::list<String>& payload_to_process);
 };

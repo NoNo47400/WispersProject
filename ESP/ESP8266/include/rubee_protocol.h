@@ -15,19 +15,19 @@
 #define END_LEN 2
 #define MAX_PDU_LEN (SYNC_REQUEST_LEN + PROTO_LEN + ADDR_LEN + MAX_DATA_LEN + FCS_LEN + END_LEN)
 #define I2C_ADDRESS 0x08
-// antes pour le calcul de la FCS
+// Polynomial for FCS calculation
 #define FCS_POLYNOMIAL 0x07
 
-// Du côté du Hub pas besoin de repondre, on est le master, on fait uniquement des requetes
+// On the Hub side, no need to respond, we are the master, we only make requests
 
-// Structure de la trame de requête (Request PDU)
+// Structure of the request frame (Request PDU)
 struct RequestPDU {
-    std::vector<nibble> sync;  // Séquence de synchronisation
-    nibble protocol_selector;  // Sélecteur de protocole
-    std::vector<nibble> address;  // Adresse
-    DataField data;  // Données
+    std::vector<nibble> sync;  // Synchronization sequence
+    nibble protocol_selector;  // Protocol selector
+    std::vector<nibble> address;  // Address
+    DataField data;  // Data
     std::vector<nibble> fcs;  // FCS
-    std::vector<nibble> end;  // Séquence de fin
+    std::vector<nibble> end;  // End sequence
 
     RequestPDU();
 };
@@ -35,22 +35,27 @@ struct RequestPDU {
 class RubeeProtocol {
 private:
     std::vector<DataField> dataFields;
+    bool simulation_mode = false;
 public:
     RequestPDU requestPDU;
-    RubeeProtocol();
+    RubeeProtocol(bool simulate) : simulation_mode(simulate) {}
     RequestPDU create_request_pdu(nibble protocol_selector, const std::vector<nibble>& address, const DataField& data);
     void send_request_pdu(const RequestPDU& pdu);
     bool read_data(DataField *dataField);
     void get_data(int num_bytes);
     DataField get_data_field(const std::vector<nibble>& data);
 
+    // debug methods
+    void print_nibble_vector(const std::vector<nibble>& data, const char* label);
+    
+    // simulation method
+    std::vector<nibble> simulate_i2c_response();
+    void set_simulation_mode(bool simulate) { simulation_mode = simulate; }
+
 private:
     uint16_t serialize_request_pdu(const RequestPDU& pdu, std::vector<nibble>& buffer);
     uint8_t calculate_fcs(const std::vector<nibble>& data);
     bool validate_pdu(const std::vector<nibble>& data);
-    void cpy_datafileds(DataField *dest, const DataField& src);
-    void cpy_nibble(std::vector<nibble>& dest, const std::vector<nibble>& src);
-    size_t count_nibbles(const std::vector<nibble>& data);
 };
 
 #endif // RUBEE_PROTOCOL_H
