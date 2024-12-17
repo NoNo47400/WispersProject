@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="glass-card animate-in">
+    <h1>Welcome, {{ session.username }}!</h1>
+    <p style="color: #fff; margin-bottom: 20px;">Intracranial Pressure Monitoring Dashboard</p>
+    
+    <div class="grid">
+        {% for sensor in sensors %}
+        <div class="sensor-card animate-in" style="animation-delay: {{ loop.index * 0.1 }}s" 
+             onclick="window.location.href='{{ url_for('sensor_detail', sensor_id=sensor.id) }}'">
+            <h3>Sensor {{ sensor.id }}</h3>
+            <div class="sensor-values">
+                <div>
+                    <div class="sensor-label">Pressure</div>
+                    <div class="sensor-value">{{ sensor.pressure_value }} mmHg</div>
+                </div>
+                <div>
+                    <div class="sensor-label">Temperature</div>
+                    <div class="sensor-value">{{ sensor.temperature }}°C</div>
+                </div>
+                <div>
+                    <div class="sensor-label">Blood Flow</div>
+                    <div class="sensor-value">{{ sensor.blood_flow }} ml/min</div>
+                </div>
+                <div>
+                    <div class="sensor-label">Oxygen Level</div>
+                    <div class="sensor-value">{{ sensor.oxygen_level }}%</div>
+                </div>
+                <div>
+                    <div class="sensor-label">Brain Activity</div>
+                    <div class="sensor-value">{{ sensor.brain_activity }} μV</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
