@@ -1,0 +1,11 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../MODEM_WISPER.srcs/sources_1/new/Carrier_generator.vhd" \
+"../../../../MODEM_WISPER.srcs/sources_1/new/Demodulation.vhd" \
+"../../../../MODEM_WISPER.srcs/sources_1/new/FILTER.vhd" \
+"../../../../MODEM_WISPER.srcs/sources_1/new/MODEM.vhd" \
+"../../../../MODEM_WISPER.srcs/sources_1/new/Modulation.vhd" \
+"../../../../MODEM_WISPER.srcs/sim_1/new/TB_MODEM.vhd" \
+
+# Do not sort compile order
+nosort

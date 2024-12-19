@@ -39,7 +39,7 @@ constant carrier_table : sin_table := (
     x"F0", x"F1", x"F2", x"F3", x"F3", x"F4", x"F5", x"F6", 
     x"F7", x"F8", x"F8", x"F9", x"FA", x"FA", x"FB", x"FB", 
     x"FC", x"FC", x"FD", x"FD", x"FD", x"FE", x"FE", x"FE", 
-    x"FE", x"FE", x"FE", x"FE", x"FE"
+    x"FE", x"FE", x"FE", x"FE", x"FE" --181 valeurs
 );
 
 type states is (first_quarter, second_quarter, third_quarter, forth_quarter);

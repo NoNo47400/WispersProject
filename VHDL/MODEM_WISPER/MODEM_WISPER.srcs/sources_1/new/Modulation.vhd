@@ -7,6 +7,7 @@ entity Modulation is
     CLK_inp : in std_logic;
     RST_inp : in std_logic;
     INFO_inp : in std_logic;
+    
     MODULATED_outp : out std_logic_vector(7 downto 0)
   );
 end Modulation;
@@ -26,7 +27,7 @@ end component;
 signal Info_sig : std_logic;
 signal Carrier_sig_1 : std_logic_vector(7 downto 0);
 signal Carrier_sig_2 : std_logic_vector(7 downto 0);
-signal Modulated_sig : std_logic_vector(7 downto 0);
+signal Modulated_sig : std_logic_vector(7 downto 0) := x"80";
 
 
 begin
