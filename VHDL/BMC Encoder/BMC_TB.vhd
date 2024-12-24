@@ -16,13 +16,13 @@ architecture behavior of bmc_encoder_tb is
     signal start : std_logic := '0';
     signal pdu_in : std_logic_vector(PDU_MAX_LEN*4-1 downto 0) := (others => '0');
     signal pdu_out : std_logic_vector(PDU_MAX_LEN*8-1 downto 0);
-    signal pdu_len_in : integer range 0 to PDU_MAX_LEN := 0;
+    signal pdu_len_in : unsigned(7 downto 0);
     signal done : std_logic;
 
     -- Composant à tester
     component bmc_encoder is
         generic (
-            PDU_MAX_LEN : integer := 4
+            PDU_MAX_LEN : integer := 2
         );
         port (
             clk         : in std_logic;
@@ -30,7 +30,7 @@ architecture behavior of bmc_encoder_tb is
             start       : in std_logic;
             pdu_in      : in std_logic_vector(PDU_MAX_LEN*4-1 downto 0);
             pdu_out     : out std_logic_vector(PDU_MAX_LEN*8-1 downto 0);
-            pdu_len_in  : in integer range 0 to PDU_MAX_LEN;
+            pdu_len_in  : in unsigned(7 downto 0);
             done        : out std_logic
         );
     end component;
@@ -73,7 +73,7 @@ begin
         -- Deux nibbles : "0101" et "1100"
         pdu_in(3 downto 0) <= "0101";  -- Premier nibble
         pdu_in(7 downto 4) <= "1100";  -- Deuxième nibble
-        pdu_len_in <= 2;  -- Deux nibbles
+        pdu_len_in <= x"02";  -- Deux nibbles
 
         -- Démarrage de l'encodage
         wait for CLK_PERIOD*2;

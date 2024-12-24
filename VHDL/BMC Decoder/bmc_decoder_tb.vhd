@@ -16,8 +16,8 @@ architecture behavior of bmc_decoder_tb is
     signal start : std_logic := '0';
     signal pdu_in : std_logic_vector(PDU_MAX_LEN*8-1 downto 0) := (others => '0');
     signal pdu_out : std_logic_vector(PDU_MAX_LEN*4-1 downto 0);
-    signal pdu_len_in : integer range 0 to PDU_MAX_LEN := 0;
-    signal pdu_len_out : integer range 0 to PDU_MAX_LEN;
+    signal pdu_len_in  : unsigned(7 downto 0) := (others => '0');
+    signal pdu_len_out : unsigned(7 downto 0);
     signal done : std_logic;
 
     -- Composant à tester
@@ -31,8 +31,8 @@ architecture behavior of bmc_decoder_tb is
             start       : in std_logic;
             pdu_in      : in std_logic_vector(PDU_MAX_LEN*8-1 downto 0);
             pdu_out     : out std_logic_vector(PDU_MAX_LEN*4-1 downto 0);
-            pdu_len_in  : in integer range 0 to PDU_MAX_LEN;
-            pdu_len_out : out integer range 0 to PDU_MAX_LEN;
+            pdu_len_in  : in unsigned(7 downto 0);
+            pdu_len_out : out unsigned(7 downto 0);
             done        : out std_logic
         );
     end component;
@@ -75,7 +75,7 @@ begin
         -- Préparation des données d'entrée encodées valant "532D" correspondant à "C5"
         pdu_in <= (others => '0');
         pdu_in(15 downto 0) <= "0101001100101101";
-        pdu_len_in <= 4;
+        pdu_len_in <= x"04"; -- 4 nibbles encodés (2 nibbles décodés)
 
         -- Démarrage du décodage
         wait for CLK_PERIOD*2;
