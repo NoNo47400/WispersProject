@@ -43,7 +43,7 @@ def init_db():
         CREATE TABLE patches (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             hub_id INTEGER,
-            patch_id INTEGER UNIQUE NOT NULL,
+            patch_id INTEGER NOT NULL,
             FOREIGN KEY (hub_id) REFERENCES hubs (hub_id)
         )
     ''')
@@ -55,7 +55,7 @@ def init_db():
             patch_id INTEGER,
             data INTEGER,
             FOREIGN KEY (patch_id) REFERENCES patches (patch_id)
-              FOREIGN KEY (hub_id) REFERENCES hubs (hub_id)
+            FOREIGN KEY (hub_id) REFERENCES hubs (hub_id)
         )
     ''')
     conn.commit()
@@ -70,26 +70,18 @@ def check_and_insert_hub(hub_id):
     if hub is None:
         c.execute('INSERT INTO hubs (hub_id) VALUES (?)', (hub_id,))
         conn.commit()
-        hub_id = c.lastrowid
-    else:
-        hub_id = hub[0]
     conn.close()
-    return hub_id
 
 # Fonction pour vérifier et insérer un patch
 def check_and_insert_patch(patch_id, hub_id):
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
-    c.execute('SELECT id FROM patches WHERE patch_id = ?', (patch_id,))
+    c.execute('SELECT id FROM patches WHERE hub_id = ? AND patch_id = ?', (hub_id, patch_id))
     patch = c.fetchone()
     if patch is None:
         c.execute('INSERT INTO patches (hub_id, patch_id) VALUES (?, ?)', (hub_id, patch_id))
         conn.commit()
-        patch_id = c.lastrowid
-    else:
-        patch_id = patch[0]
     conn.close()
-    return patch_id
 
 # Fonction pour charger les adresses depuis le fichier
 # A AJOUTER DANS LA BASE SQL AUSSI
@@ -106,8 +98,8 @@ def save_data_to_file(data):
 
 # Fonction pour enregistrer les données dans la base de données
 def save_data_to_db(hub_id, patch_id, data):
-    hub_id = check_and_insert_hub(hub_id)
-    patch_id = check_and_insert_patch(patch_id, hub_id)
+    check_and_insert_hub(hub_id)
+    check_and_insert_patch(patch_id, hub_id)
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
     c.execute('INSERT INTO sensor_data (hub_id, patch_id, data) VALUES (?, ?, ?)', (hub_id, patch_id, data))
