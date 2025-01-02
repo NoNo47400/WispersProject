@@ -42,6 +42,7 @@ def init_db():
     conn.close()
 
 # Fonction pour charger les adresses depuis le fichier
+# A AJOUTER DANS LA BASE SQL AUSSI
 def load_addresses():
     with open(ADDRESS_FILE, "r") as file:
         addresses = [line.strip() for line in file.readlines()]
@@ -57,7 +58,7 @@ def save_data_to_file(data):
 def save_data_to_db(hub_id, patch_id, data):
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
-    c.execute('INSERT INTO sensor_data (hub_id, pathc_id, data) VALUES (?, ?)', (hub_id, patch_id, data))
+    c.execute('INSERT INTO sensor_data (hub_id, pathc_id, data) VALUES (?, ?, ?)', (hub_id, patch_id, data))
     conn.commit()
     conn.close()
 
@@ -78,7 +79,7 @@ def handle_data():
         try:
             # Attendre un message dans la file d'attente
             msg = data_queue.get(timeout=1)
-            hub_id, patch_id, data = map(int, msg.split(','))
+            hub_id, patch_id, data = map(int, msg.split(';'))
             save_data_to_file(msg)
             save_data_to_db(hub_id, patch_id, data)
         except queue.Empty:
