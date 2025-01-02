@@ -4,8 +4,11 @@
 
 {% block content %}
 <div class="glass-card animate-in">
-    <h1>Patch {{ sensor_id }} History</h1>
-    <p style="color: #fff; margin-bottom: 20px;">Historical pressure data</p>
+    <h1>Hub {{ hub_id }} - Patch {{ sensor_id }} History</h1>
+    <p style="color: #fff; margin-bottom: 20px;">
+        Historical pressure data 
+        <span id="last-update" style="font-size: 0.8em; opacity: 0.8;"></span>
+    </p>
     
     <div class="chart-container">
         <div class="chart-card">
@@ -17,55 +20,91 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const commonOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: false,
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                },
-                ticks: {
-                    color: 'rgba(255, 255, 255, 0.8)'
-                }
-            },
-            x: {
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                },
-                ticks: {
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    maxRotation: 45,
-                    minRotation: 45
-                }
-            }
-        }
-    };
+    let pressureChart;
+    const UPDATE_INTERVAL = 1000; // Actualisation toutes les 1000ms (1 seconde)
+    
+    function updateLastUpdateTime() {
+        const now = new Date();
+        document.getElementById('last-update').textContent = 
+            `(Last update: ${now.toLocaleTimeString()})`;
+    }
 
-    // Create pressure chart
-    const ctx = document.getElementById('pressureChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{ timestamps | tojson | safe }},
-            datasets: [{
-                label: 'Pressure',
-                data: {{ pressure_values | tojson | safe }},
-                borderColor: 'rgba(255, 99, 132, 1)',
-                backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: commonOptions
-    });
+    function updateChart(timestamps, pressureValues) {
+        if (!pressureChart) {
+            // Création initiale du graphique
+            const ctx = document.getElementById('pressureChart').getContext('2d');
+            pressureChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Pressure',
+                        data: pressureValues,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false, // Désactive l'animation pour une mise à jour plus fluide
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.8)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            // Mise à jour des données existantes
+            pressureChart.data.labels = timestamps;
+            pressureChart.data.datasets[0].data = pressureValues;
+            pressureChart.update('none'); // Mise à jour sans animation
+        }
+        updateLastUpdateTime();
+    }
+
+    function fetchData() {
+        // Permet de ne pas avoir à regénérer la page entière
+        fetch(`/sensor/{{ sensor_id }}?hub_id={{ hub_id }}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data.timestamps, data.pressure_values);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    // Première charge des données
+    fetchData();
+
+    // Actualisation périodique
+    setInterval(fetchData, UPDATE_INTERVAL);
 </script>
 
 <style>

@@ -158,6 +158,15 @@ def sensor_detail(sensor_id):
         return redirect(url_for('index'))
         
     history = get_sensor_history(sensor_id, hub_id)
+    
+    # Si la requête est AJAX, renvoyer JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return {
+            'timestamps': history['timestamps'],
+            'pressure_values': history['pressure_values']
+        }
+    
+    # Sinon renvoyer la page HTML complète
     return render_template('sensor_detail.html', 
                          sensor_id=sensor_id,
                          hub_id=hub_id,

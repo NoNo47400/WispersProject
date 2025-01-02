@@ -288,14 +288,6 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <select id="sensorSelect" class="sensor-select" onchange="window.location.href=this.value">
-                        <option value="{{ url_for('index') }}" {% if not selected_sensor %}selected{% endif %}>All Sensors</option>
-                        {% for sensor_id in available_sensors %}
-                            <option value="{{ url_for('index', sensor_id=sensor_id) }}" {% if selected_sensor == sensor_id %}selected{% endif %}>
-                                {{ sensor_id }}
-                            </option>
-                        {% endfor %}
-                    </select>
                 </div>
                 <a href="{{ url_for('logout') }}">Logout</a>
             {% else %}
