@@ -27,7 +27,7 @@ SESSION_FILENAME = f"{DATA_DIR}/data_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S
 
 # Fonction pour initialiser la base de données
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('../database.db')
     c = conn.cursor()
     c.execute('DROP TABLE IF EXISTS sensor_data')
     c.execute('''
