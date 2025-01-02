@@ -16,8 +16,8 @@
     <div class="grid">
         {% for sensor in sensors %}
         <div class="sensor-card animate-in" style="animation-delay: {{ loop.index * 0.1 }}s" 
-             onclick="window.location.href='{{ url_for('sensor_detail', sensor_id=sensor.id) }}'">
-            <h3>Patch {{ sensor.id }}</h3>
+             onclick="window.location.href='{{ url_for('sensor_detail', sensor_id=sensor.id, hub_id=sensor.hub_id) }}'">
+            <h3>Hub {{ sensor.hub_id }} - Patch {{ sensor.id }}</h3>
             <div class="sensor-values">
                 <div>
                     <div class="sensor-label">Pressure</div>

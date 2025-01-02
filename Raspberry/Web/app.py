@@ -40,95 +40,88 @@ def get_sensor_data(hub_id=None):
     cursor = conn.cursor()
     
     if hub_id:
-        query = '''
-            SELECT DISTINCT 
-                p.patch_id,
-                (SELECT data 
-                 FROM sensor_data sd 
-                 WHERE sd.patch_id = p.patch_id 
-                 AND sd.hub_id = ?
-                 ORDER BY sd.timestamp DESC 
-                 LIMIT 1) as latest_pressure,
-                MAX(sd.timestamp) as last_update
-            FROM patches p
-            LEFT JOIN sensor_data sd ON p.patch_id = sd.patch_id
+        # Récupère les dernières données pour chaque patch d'un hub spécifique
+        cursor.execute('''
+            SELECT p.patch_id, p.hub_id, sd.data 
+            FROM patches p 
+            LEFT JOIN (
+                SELECT patch_id, hub_id, data 
+                FROM sensor_data sd1 
+                WHERE timestamp = (
+                    SELECT MAX(timestamp) 
+                    FROM sensor_data sd2 
+                    WHERE sd1.patch_id = sd2.patch_id 
+                    AND sd1.hub_id = sd2.hub_id
+                )
+            ) sd ON p.patch_id = sd.patch_id AND p.hub_id = sd.hub_id
             WHERE p.hub_id = ?
-            GROUP BY p.patch_id
-            '''
-        cursor.execute(query, (hub_id, hub_id))
+        ''', (hub_id,))
     else:
-        query = '''
-            SELECT DISTINCT 
-                p.patch_id,
-                (SELECT data 
-                 FROM sensor_data sd 
-                 WHERE sd.patch_id = p.patch_id
-                 ORDER BY sd.timestamp DESC 
-                 LIMIT 1) as latest_pressure,
-                MAX(sd.timestamp) as last_update
-            FROM patches p
-            LEFT JOIN sensor_data sd ON p.patch_id = sd.patch_id
-            GROUP BY p.patch_id
-            '''
-        cursor.execute(query)
+        # Récupère les dernières données pour tous les patches
+        cursor.execute('''
+            SELECT p.patch_id, p.hub_id, sd.data 
+            FROM patches p 
+            LEFT JOIN (
+                SELECT patch_id, hub_id, data 
+                FROM sensor_data sd1 
+                WHERE timestamp = (
+                    SELECT MAX(timestamp) 
+                    FROM sensor_data sd2 
+                    WHERE sd1.patch_id = sd2.patch_id 
+                    AND sd1.hub_id = sd2.hub_id
+                )
+            ) sd ON p.patch_id = sd.patch_id AND p.hub_id = sd.hub_id
+        ''')
     
     sensor_data = cursor.fetchall()
     sensors = []
-    for patch_id, pressure, timestamp in sensor_data:
-        if pressure is not None:
+    for patch_id, hub_id, pressure in sensor_data:
+        if pressure is not None:  # Ne pas inclure les patches sans données
             sensors.append({
                 'id': patch_id,
-                'pressure': pressure,
-                'last_update': timestamp
+                'hub_id': hub_id,
+                'pressure': pressure
             })
     conn.close()
     return sensors
 
-def get_sensor_history(sensor_id):
+def get_sensor_history(sensor_id, hub_id):
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT data, datetime(timestamp, 'localtime') as local_time
-        FROM sensor_data
-        WHERE patch_id = ?
-        ORDER BY timestamp DESC
+        SELECT data, strftime('%Y-%m-%d %H:%M:%S', timestamp) as formatted_time
+        FROM sensor_data 
+        WHERE patch_id = ? AND hub_id = ?
+        ORDER BY timestamp DESC 
         LIMIT 50
-    ''', (sensor_id,))
+    ''', (sensor_id, hub_id))
     data = cursor.fetchall()
     conn.close()
 
+    # Inverser l'ordre pour l'affichage chronologique
+    pressure_values = [row[0] for row in data][::-1]
+    timestamps = [row[1] for row in data][::-1]
+
     return {
-        'timestamps': [row[1] for row in data],
-        'pressure_values': [row[0] for row in data]
+        'timestamps': timestamps,
+        'pressure_values': pressure_values
     }
 
 def get_hubs():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    cursor.execute('''
-        SELECT DISTINCT h.hub_id 
-        FROM hubs h
-        JOIN patches p ON h.hub_id = p.hub_id
-        JOIN sensor_data sd ON p.patch_id = sd.patch_id
-        ORDER BY h.hub_id
-    ''')
+    cursor.execute('SELECT DISTINCT hub_id FROM hubs ORDER BY hub_id')
     hubs = [row[0] for row in cursor.fetchall()]
     conn.close()
     return hubs
 
-def get_patches_for_hub(hub_id):
+def get_available_sensors():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    cursor.execute('''
-        SELECT DISTINCT p.patch_id
-        FROM patches p
-        JOIN sensor_data sd ON p.patch_id = sd.patch_id
-        WHERE p.hub_id = ?
-        ORDER BY p.patch_id
-    ''', (hub_id,))
-    patches = [row[0] for row in cursor.fetchall()]
+    cursor.execute('SELECT DISTINCT patch_id FROM patches ORDER BY patch_id')
+    sensors = [row[0] for row in cursor.fetchall()]
     conn.close()
-    return patches
+    return sensors
 
 # Login decorator
 def login_required(f):
@@ -145,17 +138,10 @@ def login_required(f):
 def index():
     selected_hub = request.args.get('hub_id', type=int)
     selected_sensor = request.args.get('sensor_id', type=int)
-    
     available_hubs = get_hubs()
-    available_sensors = []
-    
-    if selected_hub:
-        available_sensors = get_patches_for_hub(selected_hub)
-    
+    available_sensors = get_available_sensors()
     sensors = get_sensor_data(selected_hub)
-    if selected_sensor:
-        sensors = [s for s in sensors if s['id'] == selected_sensor]
-
+    
     return render_template('index.html', 
                          sensors=sensors, 
                          selected_hub=selected_hub,
@@ -166,9 +152,15 @@ def index():
 @app.route('/sensor/<int:sensor_id>')
 @login_required
 def sensor_detail(sensor_id):
-    history = get_sensor_history(sensor_id)
+    hub_id = request.args.get('hub_id', type=int)
+    if hub_id is None:
+        flash('Hub ID is required')
+        return redirect(url_for('index'))
+        
+    history = get_sensor_history(sensor_id, hub_id)
     return render_template('sensor_detail.html', 
                          sensor_id=sensor_id,
+                         hub_id=hub_id,
                          timestamps=history['timestamps'],
                          pressure_values=history['pressure_values'])
 
