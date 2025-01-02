@@ -1,90 +1,44 @@
-#include <Arduino.h>
-#include <ArduinoMqttClient.h>
-#include <ESP8266WiFi.h>
+#include "hub_controller.h"
 #include "wifi.h"
+#include <Wire.h>
 
-char ssid[] = SECRET_SSID;    // your network SSID (name)
-char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
+// Global configuration
+String deviceID = "1";
+const char broker[] = "172.20.10.2";
+uint16_t port = 1234;
 
-WiFiClient wifiClient;
-MqttClient mqttClient(wifiClient);
+// Controller instance
+HubController hubController(broker, port, deviceID);
+WifiClient wifiClient;
 
-const char broker[] = "172.20.10.4";
-int        port     = 1883;
-const char topic[]  = "test";
+// I2C handler function
+void i2c_handler(int num_bytes) {
+    hubController.rubeeProtocol.get_data(num_bytes);
+}
 
 void setup() {
-  // put your setup code here, to run once:
-  //Initialize serial and wait for port to open:
-  Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-
-  // attempt to connect to WiFi network:
-  Serial.print("Attempting to connect to WPA SSID: ");
-  Serial.println(ssid);
-  while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
-    // failed, retry
-    Serial.print(".");
-    delay(5000);
-  }
-
-  Serial.println("You're connected to the network");
-  Serial.println();
-
-  // You can provide a unique client ID, if not set the library uses Arduino-millis()
-  // Each client must have a unique client ID
-  // mqttClient.setId("clientId");
-
-  // You can provide a username and password for authentication
-  // mqttClient.setUsernamePassword("username", "password");
-
-  Serial.print("Attempting to connect to the MQTT broker: ");
-  Serial.println(broker);
-
-  if (!mqttClient.connect(broker, port)) {
-    Serial.print("MQTT connection failed! Error code = ");
-    Serial.println(mqttClient.connectError());
-
-    while (1);
-  }
-
-  Serial.println("You're connected to the MQTT broker!");
-  Serial.println();
-
-  Serial.print("Subscribing to topic: ");
-  Serial.println(topic);
-  Serial.println();
-
-  // subscribe to a topic
-  mqttClient.subscribe(topic);
-
-  // topics can be unsubscribed using:
-  // mqttClient.unsubscribe(topic);
-
-  Serial.print("Waiting for messages on topic: ");
-  Serial.println(topic);
-  Serial.println();
-  
+    Serial.begin(9600);
+    delay(2000); // Attendre que le port série soit prêt
+    
+    Serial.println("\nStarting ESP8266...");
+    
+    Wire.begin(I2C_ADDRESS);
+    Wire.onReceive(i2c_handler);
+    
+    int wifi_attempts = 0;
+    while (!wifiClient.connect_to_wifi()) {
+        Serial.println("Retrying WiFi connection...");
+        delay(5000);
+        wifi_attempts++;
+        if (wifi_attempts >= 3) {
+            Serial.println("Failed to connect to WiFi after 3 attempts. Resetting...");
+            ESP.restart();
+        }
+    }
+    
+    hubController.setup();
 }
 
 void loop() {
-  int messageSize = mqttClient.parseMessage();
-  if (messageSize) {
-    // we received a message, print out the topic and contents
-    Serial.print("Received a message with topic '");
-    Serial.print(mqttClient.messageTopic());
-    Serial.print("', length ");
-    Serial.print(messageSize);
-    Serial.println(" bytes:");
-
-    // use the Stream interface to print the contents
-    while (mqttClient.available()) {
-      Serial.print((char)mqttClient.read());
-    }
-    Serial.println();
-
-    Serial.println();
-  }
+    hubController.handleState();
 }
