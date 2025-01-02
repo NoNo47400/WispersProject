@@ -4,7 +4,6 @@ import sqlite3
 from functools import wraps
 import os
 from datetime import timedelta
-import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -33,56 +32,10 @@ def get_db():
 # Initialize the database
 init_db()
 
-def get_sensor_data(sensor_id=None):
-    df = pd.read_csv('data/sensors.csv')
-    if sensor_id:
-        df = df[df['sensor_id'] == sensor_id]
-    latest_data = df.groupby('sensor_id').last().reset_index()
-    
-    sensors = []
-    for _, row in latest_data.iterrows():
-        sensors.append({
-            'id': row['sensor_id'],
-            'pressure_value': row['pressure_value'],
-            'temperature': row['temperature'],
-            'blood_flow': row['blood_flow'],
-            'oxygen_level': row['oxygen_level'],
-            'brain_activity': row['brain_activity']
-        })
-    return sensors
-
-def get_sensor_history(sensor_id):
-    df = pd.read_csv('data/sensors.csv')
-    sensor_data = df[df['sensor_id'] == sensor_id].sort_values('timestamp')
-    return {
-        'timestamps': sensor_data['timestamp'].tolist(),
-        'pressure_values': sensor_data['pressure_value'].tolist(),
-        'temperature_values': sensor_data['temperature'].tolist(),
-        'blood_flow_values': sensor_data['blood_flow'].tolist(),
-        'oxygen_values': sensor_data['oxygen_level'].tolist(),
-        'brain_activity_values': sensor_data['brain_activity'].tolist()
-    }
-
-# Fonction pour récupérer les données des capteurs depuis la base de données
-def get_sensor_data_from_db():
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute('SELECT hub_id, patch_id, data FROM sensor_data')
-    data = c.fetchall()
-    conn.close()
-    return data
-
-def get_hubs():
-    db = sqlite3.connect('database.db')
-    cursor = db.cursor()
-    cursor.execute('SELECT DISTINCT hub_id FROM sensor_data')
-    hubs = [row[0] for row in cursor.fetchall()]
-    db.close()
-    return hubs
-
+# Remplacer les fonctions de récupération de données
 def get_sensor_data(hub_id=None):
-    db = sqlite3.connect('database.db')
-    cursor = db.cursor()
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
     
     if hub_id:
         cursor.execute('SELECT patch_id, data FROM sensor_data WHERE hub_id = ?', (hub_id,))
@@ -96,8 +49,33 @@ def get_sensor_data(hub_id=None):
             'id': patch_id,
             'pressure': pressure
         })
-    db.close()
+    conn.close()
     return sensors
+
+def get_sensor_history(sensor_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT data, timestamp 
+        FROM sensor_data 
+        WHERE patch_id = ? 
+        ORDER BY timestamp DESC 
+        LIMIT 50''', (sensor_id,))
+    data = cursor.fetchall()
+    conn.close()
+
+    return {
+        'timestamps': [row[1] for row in data],
+        'pressure_values': [row[0] for row in data]
+    }
+
+def get_hubs():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT DISTINCT hub_id FROM sensor_data')
+    hubs = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return hubs
 
 # Login decorator
 def login_required(f):
@@ -123,9 +101,11 @@ def index():
 @app.route('/sensor/<int:sensor_id>')
 @login_required
 def sensor_detail(sensor_id):
-    sensor_data = get_sensor_data_from_db()
-    sensor_data = [data for data in sensor_data if data[1] == sensor_id]  # Filtrer par patch_id
-    return render_template('sensor_detail.html', sensor_data=sensor_data)
+    history = get_sensor_history(sensor_id)
+    return render_template('sensor_detail.html', 
+                         sensor_id=sensor_id,
+                         timestamps=history['timestamps'],
+                         pressure_values=history['pressure_values'])
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

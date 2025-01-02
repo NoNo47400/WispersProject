@@ -4,29 +4,13 @@
 
 {% block content %}
 <div class="glass-card animate-in">
-    <h1>Sensor {{ sensor_id }} History</h1>
-    <p style="color: #fff; margin-bottom: 20px;">Historical data for all measurements</p>
+    <h1>Patch {{ sensor_id }} History</h1>
+    <p style="color: #fff; margin-bottom: 20px;">Historical pressure data</p>
     
-    <div class="charts-grid">
+    <div class="chart-container">
         <div class="chart-card">
             <h3>Pressure (mmHg)</h3>
             <canvas id="pressureChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>Temperature (°C)</h3>
-            <canvas id="temperatureChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>Blood Flow (ml/min)</h3>
-            <canvas id="bloodFlowChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>Oxygen Level (%)</h3>
-            <canvas id="oxygenChart"></canvas>
-        </div>
-        <div class="chart-card">
-            <h3>Brain Activity (μV)</h3>
-            <canvas id="brainActivityChart"></canvas>
         </div>
     </div>
 </div>
@@ -64,39 +48,28 @@
         }
     };
 
-    function createChart(canvasId, label, data, color) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        return new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ timestamps | tojson | safe }},
-                datasets: [{
-                    label: label,
-                    data: data,
-                    borderColor: color,
-                    backgroundColor: color.replace('1)', '0.1)'),
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: commonOptions
-        });
-    }
-
-    // Create charts for each metric
-    createChart('pressureChart', 'Pressure', {{ pressure_values | tojson | safe }}, 'rgba(255, 99, 132, 1)');
-    createChart('temperatureChart', 'Temperature', {{ temperature_values | tojson | safe }}, 'rgba(54, 162, 235, 1)');
-    createChart('bloodFlowChart', 'Blood Flow', {{ blood_flow_values | tojson | safe }}, 'rgba(75, 192, 192, 1)');
-    createChart('oxygenChart', 'Oxygen Level', {{ oxygen_values | tojson | safe }}, 'rgba(153, 102, 255, 1)');
-    createChart('brainActivityChart', 'Brain Activity', {{ brain_activity_values | tojson | safe }}, 'rgba(255, 159, 64, 1)');
+    // Create pressure chart
+    const ctx = document.getElementById('pressureChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ timestamps | tojson | safe }},
+            datasets: [{
+                label: 'Pressure',
+                data: {{ pressure_values | tojson | safe }},
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: commonOptions
+    });
 </script>
 
 <style>
-    .charts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 20px;
+    .chart-container {
         margin-top: 20px;
     }
 
@@ -105,19 +78,13 @@
         backdrop-filter: blur(4px);
         border-radius: 10px;
         padding: 20px;
-        height: 300px;
+        height: 400px;
     }
 
     .chart-card h3 {
         color: #fff;
         margin-bottom: 15px;
         font-size: 1.1em;
-    }
-
-    @media (max-width: 480px) {
-        .charts-grid {
-            grid-template-columns: 1fr;
-        }
     }
 </style>
 {% endblock %}
