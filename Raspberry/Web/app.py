@@ -41,31 +41,45 @@ def get_sensor_data(hub_id=None):
     
     if hub_id:
         query = '''
-            SELECT p.patch_id, 
-                   (SELECT data FROM sensor_data sd 
-                    WHERE sd.patch_id = p.patch_id 
-                    ORDER BY timestamp DESC LIMIT 1) as latest_pressure
+            SELECT DISTINCT 
+                p.patch_id,
+                (SELECT data 
+                 FROM sensor_data sd 
+                 WHERE sd.patch_id = p.patch_id 
+                 AND sd.hub_id = ?
+                 ORDER BY sd.timestamp DESC 
+                 LIMIT 1) as latest_pressure,
+                MAX(sd.timestamp) as last_update
             FROM patches p
+            LEFT JOIN sensor_data sd ON p.patch_id = sd.patch_id
             WHERE p.hub_id = ?
+            GROUP BY p.patch_id
             '''
-        cursor.execute(query, (hub_id,))
+        cursor.execute(query, (hub_id, hub_id))
     else:
         query = '''
-            SELECT p.patch_id, 
-                   (SELECT data FROM sensor_data sd 
-                    WHERE sd.patch_id = p.patch_id 
-                    ORDER BY timestamp DESC LIMIT 1) as latest_pressure
+            SELECT DISTINCT 
+                p.patch_id,
+                (SELECT data 
+                 FROM sensor_data sd 
+                 WHERE sd.patch_id = p.patch_id
+                 ORDER BY sd.timestamp DESC 
+                 LIMIT 1) as latest_pressure,
+                MAX(sd.timestamp) as last_update
             FROM patches p
+            LEFT JOIN sensor_data sd ON p.patch_id = sd.patch_id
+            GROUP BY p.patch_id
             '''
         cursor.execute(query)
     
     sensor_data = cursor.fetchall()
     sensors = []
-    for patch_id, pressure in sensor_data:
-        if pressure is not None:  # Only include sensors with data
+    for patch_id, pressure, timestamp in sensor_data:
+        if pressure is not None:
             sensors.append({
                 'id': patch_id,
-                'pressure': pressure
+                'pressure': pressure,
+                'last_update': timestamp
             })
     conn.close()
     return sensors
@@ -74,11 +88,10 @@ def get_sensor_history(sensor_id):
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT sd.data, sd.timestamp 
-        FROM sensor_data sd
-        JOIN patches p ON sd.patch_id = p.patch_id
-        WHERE p.patch_id = ? 
-        ORDER BY sd.timestamp DESC 
+        SELECT data, datetime(timestamp, 'localtime') as local_time
+        FROM sensor_data
+        WHERE patch_id = ?
+        ORDER BY timestamp DESC
         LIMIT 50
     ''', (sensor_id,))
     data = cursor.fetchall()
@@ -92,7 +105,13 @@ def get_sensor_history(sensor_id):
 def get_hubs():
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT DISTINCT hub_id FROM hubs ORDER BY hub_id')
+    cursor.execute('''
+        SELECT DISTINCT h.hub_id 
+        FROM hubs h
+        JOIN patches p ON h.hub_id = p.hub_id
+        JOIN sensor_data sd ON p.patch_id = sd.patch_id
+        ORDER BY h.hub_id
+    ''')
     hubs = [row[0] for row in cursor.fetchall()]
     conn.close()
     return hubs
@@ -100,7 +119,13 @@ def get_hubs():
 def get_patches_for_hub(hub_id):
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT patch_id FROM patches WHERE hub_id = ? ORDER BY patch_id', (hub_id,))
+    cursor.execute('''
+        SELECT DISTINCT p.patch_id
+        FROM patches p
+        JOIN sensor_data sd ON p.patch_id = sd.patch_id
+        WHERE p.hub_id = ?
+        ORDER BY p.patch_id
+    ''', (hub_id,))
     patches = [row[0] for row in cursor.fetchall()]
     conn.close()
     return patches
