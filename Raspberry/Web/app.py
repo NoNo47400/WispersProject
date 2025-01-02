@@ -63,6 +63,42 @@ def get_sensor_history(sensor_id):
         'brain_activity_values': sensor_data['brain_activity'].tolist()
     }
 
+# Fonction pour récupérer les données des capteurs depuis la base de données
+def get_sensor_data_from_db():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT hub_id, patch_id, data FROM sensor_data')
+    data = c.fetchall()
+    conn.close()
+    return data
+
+def get_hubs():
+    db = sqlite3.connect('database.db')
+    cursor = db.cursor()
+    cursor.execute('SELECT DISTINCT hub_id FROM sensor_data')
+    hubs = [row[0] for row in cursor.fetchall()]
+    db.close()
+    return hubs
+
+def get_sensor_data(hub_id=None):
+    db = sqlite3.connect('database.db')
+    cursor = db.cursor()
+    
+    if hub_id:
+        cursor.execute('SELECT patch_id, data FROM sensor_data WHERE hub_id = ?', (hub_id,))
+    else:
+        cursor.execute('SELECT patch_id, data FROM sensor_data')
+    
+    sensor_data = cursor.fetchall()
+    sensors = []
+    for patch_id, pressure in sensor_data:
+        sensors.append({
+            'id': patch_id,
+            'pressure': pressure
+        })
+    db.close()
+    return sensors
+
 # Login decorator
 def login_required(f):
     @wraps(f)
@@ -76,26 +112,20 @@ def login_required(f):
 @app.route('/')
 @login_required
 def index():
-    sensor_id = request.args.get('sensor_id')
-    sensors = get_sensor_data(sensor_id)
-    df = pd.read_csv('data/sensors.csv')
-    available_sensors = sorted(df['sensor_id'].unique())
-    return render_template('index.html', sensors=sensors, available_sensors=available_sensors, selected_sensor=sensor_id)
+    selected_hub = request.args.get('hub_id', type=int)
+    available_hubs = get_hubs()
+    sensors = get_sensor_data(selected_hub)
+    return render_template('index.html', 
+                         sensors=sensors, 
+                         selected_hub=selected_hub,
+                         available_hubs=available_hubs)
 
-@app.route('/sensor/<sensor_id>')
+@app.route('/sensor/<int:sensor_id>')
 @login_required
 def sensor_detail(sensor_id):
-    df = pd.read_csv('data/sensors.csv')
-    available_sensors = sorted(df['sensor_id'].unique())
-    if sensor_id not in available_sensors:
-        return redirect(url_for('index'))
-        
-    history_data = get_sensor_history(sensor_id)
-    return render_template('sensor_detail.html', 
-                         sensor_id=sensor_id,
-                         available_sensors=available_sensors,
-                         selected_sensor=sensor_id,
-                         **history_data)
+    sensor_data = get_sensor_data_from_db()
+    sensor_data = [data for data in sensor_data if data[1] == sensor_id]  # Filtrer par patch_id
+    return render_template('sensor_detail.html', sensor_data=sensor_data)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

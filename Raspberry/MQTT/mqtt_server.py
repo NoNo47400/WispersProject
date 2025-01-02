@@ -4,6 +4,7 @@ import queue
 import time
 from datetime import datetime
 import os
+import sqlite3 
 
 # Paramètres de configuration
 BROKER = "172.20.10.2"
@@ -24,6 +25,21 @@ os.makedirs(DATA_DIR, exist_ok=True)
 # Nom du fichier de session pour enregistrer les données
 SESSION_FILENAME = f"{DATA_DIR}/data_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
 
+# Fonction pour initialiser la base de données
+def init_db():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('DROP TABLE IF EXISTS sensor_data')
+    c.execute('''
+        CREATE TABLE sensor_data (
+            hub_id INTEGER,
+            patch_id INTEGER,
+            data INTEGER
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
 # Fonction pour charger les adresses depuis le fichier
 def load_addresses():
     with open(ADDRESS_FILE, "r") as file:
@@ -35,6 +51,14 @@ def save_data_to_file(data):
     with open(SESSION_FILENAME, "a") as file:  # Utilise le fichier unique
         file.write(data + "\n")
     print(f"Data appended to {SESSION_FILENAME}")
+
+# Fonction pour enregistrer les données dans la base de données
+def save_data_to_db(hub_id, patch_id, data):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO sensor_data (hub_id, pathc_id, data) VALUES (?, ?)', (hub_id, patch_id, data))
+    conn.commit()
+    conn.close()
 
 # Thread pour gérer les messages de type 'get_addresses'
 def handle_get_addresses(client):
@@ -53,7 +77,9 @@ def handle_data():
         try:
             # Attendre un message dans la file d'attente
             msg = data_queue.get(timeout=1)
+            hub_id, patch_id, data = map(int, msg.split(','))
             save_data_to_file(msg)
+            save_data_to_db(hub_id, patch_id, data)
         except queue.Empty:
             continue
 
@@ -96,6 +122,9 @@ data_thread = threading.Thread(target=handle_data)
 
 addresses_thread.start()
 data_thread.start()
+
+# Initialiser la base de données
+init_db()
 
 try:
     # Démarrer la boucle MQTT dans le thread principal
