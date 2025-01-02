@@ -167,4 +167,4 @@ if __name__ == '__main__':
     print("=== Starting Flask Application ===")
     print("Debug mode is ON")
     print("Visit http://localhost:5000 in your browser")
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
