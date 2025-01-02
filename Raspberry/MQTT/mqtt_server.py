@@ -14,6 +14,7 @@ GET_ADDRESSES_TOPIC = "get_addresses"  # Topic pour les demandes d'adresses
 ADDRESSES_TOPIC = "addresses"  # Topic pour envoyer les adresses
 ADDRESS_FILE = "../addresses.txt"  # Fichier contenant les adresses
 DATA_DIR = "../Data"  # Dossier où les fichiers seront sauvegardés
+DATABASE_PATH = "../database.db"  # Chemin de la base de données
 
 # Files d'attente pour la communication entre threads
 data_queue = queue.Queue()
@@ -27,7 +28,7 @@ SESSION_FILENAME = f"{DATA_DIR}/data_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S
 
 # Fonction pour initialiser la base de données
 def init_db():
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
     c.execute('DROP TABLE IF EXISTS sensor_data')
     c.execute('''
@@ -54,7 +55,7 @@ def save_data_to_file(data):
 
 # Fonction pour enregistrer les données dans la base de données
 def save_data_to_db(hub_id, patch_id, data):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
     c.execute('INSERT INTO sensor_data (hub_id, pathc_id, data) VALUES (?, ?)', (hub_id, patch_id, data))
     conn.commit()

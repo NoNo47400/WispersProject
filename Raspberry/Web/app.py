@@ -5,6 +5,8 @@ from functools import wraps
 import os
 from datetime import timedelta
 
+DATABASE_PATH = "../database.db"  # Chemin de la base de données
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -12,7 +14,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Database initialization
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -25,7 +27,7 @@ def init_db():
     conn.close()
 
 def get_db():
-    db = sqlite3.connect('database.db')
+    db = sqlite3.connect(DATABASE_PATH)
     db.row_factory = sqlite3.Row
     return db
 
@@ -34,7 +36,7 @@ init_db()
 
 # Remplacer les fonctions de récupération de données
 def get_sensor_data(hub_id=None):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     
     if hub_id:
@@ -53,7 +55,7 @@ def get_sensor_data(hub_id=None):
     return sensors
 
 def get_sensor_history(sensor_id):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     cursor.execute('''
         SELECT data, timestamp 
@@ -70,7 +72,7 @@ def get_sensor_history(sensor_id):
     }
 
 def get_hubs():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
     cursor.execute('SELECT DISTINCT hub_id FROM sensor_data')
     hubs = [row[0] for row in cursor.fetchall()]
