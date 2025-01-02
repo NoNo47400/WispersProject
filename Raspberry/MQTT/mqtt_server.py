@@ -30,16 +30,66 @@ SESSION_FILENAME = f"{DATA_DIR}/data_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S
 def init_db():
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
+    c.execute('DROP TABLE IF EXISTS hubs')
+    c.execute('DROP TABLE IF EXISTS patches')
     c.execute('DROP TABLE IF EXISTS sensor_data')
     c.execute('''
+        CREATE TABLE hubs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            hub_id INTEGER UNIQUE NOT NULL
+        )
+    ''')
+    c.execute('''
+        CREATE TABLE patches (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            hub_id INTEGER,
+            patch_id INTEGER UNIQUE NOT NULL,
+            FOREIGN KEY (hub_id) REFERENCES hubs (hub_id)
+        )
+    ''')
+    c.execute('''
         CREATE TABLE sensor_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             hub_id INTEGER,
             patch_id INTEGER,
-            data INTEGER
+            data INTEGER,
+            FOREIGN KEY (patch_id) REFERENCES patches (patch_id)
+              FOREIGN KEY (hub_id) REFERENCES hubs (hub_id)
         )
     ''')
     conn.commit()
     conn.close()
+
+# Fonction pour vérifier et insérer un hub
+def check_and_insert_hub(hub_id):
+    conn = sqlite3.connect(DATABASE_PATH)
+    c = conn.cursor()
+    c.execute('SELECT id FROM hubs WHERE hub_id = ?', (hub_id,))
+    hub = c.fetchone()
+    if hub is None:
+        c.execute('INSERT INTO hubs (hub_id) VALUES (?)', (hub_id,))
+        conn.commit()
+        hub_id = c.lastrowid
+    else:
+        hub_id = hub[0]
+    conn.close()
+    return hub_id
+
+# Fonction pour vérifier et insérer un patch
+def check_and_insert_patch(patch_id, hub_id):
+    conn = sqlite3.connect(DATABASE_PATH)
+    c = conn.cursor()
+    c.execute('SELECT id FROM patches WHERE patch_id = ?', (patch_id,))
+    patch = c.fetchone()
+    if patch is None:
+        c.execute('INSERT INTO patches (hub_id, patch_id) VALUES (?, ?)', (hub_id, patch_id))
+        conn.commit()
+        patch_id = c.lastrowid
+    else:
+        patch_id = patch[0]
+    conn.close()
+    return patch_id
 
 # Fonction pour charger les adresses depuis le fichier
 # A AJOUTER DANS LA BASE SQL AUSSI
@@ -56,6 +106,8 @@ def save_data_to_file(data):
 
 # Fonction pour enregistrer les données dans la base de données
 def save_data_to_db(hub_id, patch_id, data):
+    hub_id = check_and_insert_hub(hub_id)
+    patch_id = check_and_insert_patch(patch_id, hub_id)
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
     c.execute('INSERT INTO sensor_data (hub_id, patch_id, data) VALUES (?, ?, ?)', (hub_id, patch_id, data))
