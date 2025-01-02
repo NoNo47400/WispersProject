@@ -58,7 +58,7 @@ def save_data_to_file(data):
 def save_data_to_db(hub_id, patch_id, data):
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
-    c.execute('INSERT INTO sensor_data (hub_id, pathc_id, data) VALUES (?, ?, ?)', (hub_id, patch_id, data))
+    c.execute('INSERT INTO sensor_data (hub_id, patch_id, data) VALUES (?, ?, ?)', (hub_id, patch_id, data))
     conn.commit()
     conn.close()
 
