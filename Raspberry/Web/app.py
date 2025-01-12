@@ -16,11 +16,40 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 def init_db():
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
+    
+    # Drop existing tables
+    c.execute('DROP TABLE IF EXISTS sensor_data')
+    c.execute('DROP TABLE IF EXISTS patches')
+    c.execute('DROP TABLE IF EXISTS hubs')
+    
+    # Create tables
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL
+        )
+    ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS hubs (
+            hub_id INTEGER PRIMARY KEY
+        )
+    ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS patches (
+            patch_id INTEGER,
+            hub_id INTEGER,
+            PRIMARY KEY (patch_id, hub_id),
+            FOREIGN KEY (hub_id) REFERENCES hubs(hub_id)
+        )
+    ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS sensor_data (
+            patch_id INTEGER,
+            hub_id INTEGER,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            data REAL,
+            FOREIGN KEY (patch_id, hub_id) REFERENCES patches(patch_id, hub_id)
         )
     ''')
     conn.commit()
