@@ -140,30 +140,34 @@ void HubController::handleState() {
 
 // Handle the GetAddresses state
 void HubController::handleGetAddressesState() {
-    if (!addressesReceived) {
+    if (!addressesReceived || addressList.empty()) {  // Ajout de la vérification addressList.empty()
         static unsigned long lastRequestTime = 0;
-        const unsigned long requestInterval = 1000; // 1 second
+        const unsigned long requestInterval = 5000;
         
         unsigned long currentTime = millis();
         if (currentTime - lastRequestTime >= requestInterval) {
+            addressList.clear();
+            currentAddressIndex = 0;  // Reset index when clearing addresses
             requestAddresses();
             lastRequestTime = currentTime;
         }
     } else {
-        addressesReceived = false;
         currentState = GetData;
     }
 }
 
 // Handle the GetData state
 void HubController::handleGetDataState(std::list<String>& get_payload) {
+    if (addressList.empty() || currentAddressIndex >= static_cast<int>(addressList.size())) {
+        Serial.println("No valid addresses to process, returning to GetAddresses state");
+        currentState = GetAddresses;
+        addressesReceived = false;
+        currentAddressIndex = 0;
+        return;
+    }
+
     int is_finished_local = 0;
-    while (!is_finished_local) {  // TO TEST avec finished à 0 car peur que ça casse le truc
-        if (currentAddressIndex >= static_cast<int>(addressList.size())) {
-            Serial.println("Error: currentAddressIndex out of bounds");
-            return;
-            //break;
-        }
+    while (!is_finished_local) {
         String currentAddress = addressList[currentAddressIndex];
         Serial.print("Requesting data for address: ");
         Serial.println(currentAddress);

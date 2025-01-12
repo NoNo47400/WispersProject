@@ -21,22 +21,21 @@ uint8_t RubeeProtocol::calculate_fcs(const std::vector<nibble>& data) {
 
 // Create a request PDU frame
 RequestPDU RubeeProtocol::create_request_pdu(nibble protocol_selector, const std::vector<nibble>& address, const DataField& data) {
-    RequestPDU pdu;
-    pdu.sync = {0x0, 0x0, 0x5};
-    pdu.end = {0x0, 0x0};
-    pdu.protocol_selector = protocol_selector;
-    pdu.address = address;
-    pdu.data = data;
+    requestPDU.sync = {0x0, 0x0, 0x5};
+    requestPDU.end = {0x0, 0x0};
+    requestPDU.protocol_selector = protocol_selector;
+    requestPDU.address = address;
+    requestPDU.data = data;
     std::vector<nibble> buffer_to_send;
-    serialize_request_pdu(pdu, buffer_to_send);
+    serialize_request_pdu(requestPDU, buffer_to_send);
     print_nibble_vector(buffer_to_send, "Buffer to Send without fcs");
     uint8_t fcs_result = calculate_fcs(std::vector<nibble>(buffer_to_send.begin(), buffer_to_send.end() - 4));
     Serial.print("Calculated FCS result: 0x");
     Serial.println(fcs_result, HEX);
-    pdu.fcs = {nibble(fcs_result >> 4), nibble(fcs_result & 0x0F)};
-    serialize_request_pdu(pdu, buffer_to_send);
+    requestPDU.fcs = {nibble(fcs_result >> 4), nibble(fcs_result & 0x0F)};
+    serialize_request_pdu(requestPDU, buffer_to_send);
     print_nibble_vector(buffer_to_send, "Buffer to Send with fcs");
-    return pdu;
+    return requestPDU;
 }
 
 // Validate a PDU frame
@@ -203,36 +202,34 @@ std::vector<nibble> RubeeProtocol::simulate_i2c_response() {
     response.push_back(0x0);
     response.push_back(0x5);
     
-    // Récupérer l'adresse demandée depuis le requestPDU
-    uint8_t requested_address = 0;
-    if (!requestPDU.address.empty()) {
-        requested_address = requestPDU.address.back().to_ulong();
-    }
+    // Simuler différentes données selon l'adresse du patch
+    std::vector<nibble> data_content;
+    uint8_t variation = simulation_counter % 9;
     
-    // Incrémenter le compteur pour faire varier les données
+    // Récupérer l'adresse demandée depuis le patch_address du requestPDU
+    uint8_t requested_address = requestPDU.data.patch_address.to_ulong();
     simulation_counter++;
     
-    // Générer des données simulées selon l'adresse avec variation
-    std::vector<nibble> data_content;
-    uint8_t variation = simulation_counter % 4; // Variation entre 0 et 3
+    Serial.print("Requested patch address from PDU: ");
+    Serial.println(requested_address);
     
     switch(requested_address) {
         case 2:
             data_content = {
-                nibble((0x1 + variation) & 0x0F), 
-                nibble((0x5 + variation) & 0x0F)
+                nibble((variation) & 0x0F), 
+                nibble((variation) & 0x0F)
             };
             break;
         case 4:
             data_content = {
-                nibble((0x3 + variation) & 0x0F), 
-                nibble((0x0 + variation) & 0x0F)
+                nibble((variation) & 0x0F), 
+                nibble((variation) & 0x0F)
             };
             break;
         case 6:
             data_content = {
-                nibble((0x2 + variation) & 0x0F), 
-                nibble((0x5 + variation) & 0x0F)
+                nibble((variation) & 0x0F), 
+                nibble((variation) & 0x0F)
             };
             break;
         default:
@@ -241,11 +238,42 @@ std::vector<nibble> RubeeProtocol::simulate_i2c_response() {
                 nibble((variation + 1) & 0x0F)
             };
     }
-    
-    // ...rest of the existing simulation code...
 
-    Serial.print("Variation counter: ");
-    Serial.println(variation);
+    
+    uint8_t data_length = data_content.size() + 1 + 2 + 1;
+    response.push_back(nibble((data_length >> 4) & 0x0F));  // MSB
+    response.push_back(nibble(data_length & 0x0F));  // LSB
+    
+    // Patch address - utiliser l'adresse demandée
+    response.push_back(nibble(requested_address & 0x0F));
+    
+    // Add data content
+    for (const auto& nib : data_content) {
+        response.push_back(nib);
+    }
+    
+    // IsFinished flag - 1 nibble
+    response.push_back(0x1);
+    
+    // Calculate FCS before adding it to the response
+    uint8_t fcs = calculate_fcs(response);
+    
+    // Add FCS - 2 nibbles
+    response.push_back(nibble((fcs >> 4) & 0x0F));
+    response.push_back(nibble(fcs & 0x0F));
+    
+    // End sequence - 2 nibbles
+    response.push_back(0x0);
+    response.push_back(0x0);
+    
+    // Debug print
+    Serial.println("=== Simulated I2C Response ===");
+    Serial.println("Structure:");
+    Serial.println("SYNC(05) | LEN(02) | ADDR(2) | DATA(20) | FIN(1) | FCS(XX) | END(00)");
+    Serial.print("Simulating response for address: ");
+    Serial.println(requested_address);
+    print_nibble_vector(response, "Complete response");
+    Serial.println("============================");
     
     return response;
 }
