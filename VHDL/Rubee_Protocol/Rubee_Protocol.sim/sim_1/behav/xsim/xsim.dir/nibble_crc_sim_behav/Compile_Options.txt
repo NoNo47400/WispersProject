@@ -1,0 +1,1 @@
+--incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "nibble_crc_sim_behav" "xil_defaultlib.nibble_crc_sim" -log "elaborate.log" 
