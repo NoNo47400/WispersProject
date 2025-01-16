@@ -36,6 +36,7 @@ class RubeeProtocol {
 private:
     std::vector<DataField> dataFields;
     bool simulation_mode = false;
+    uint8_t simulation_counter = 0;
 public:
     RequestPDU requestPDU;
     RubeeProtocol(bool simulate) : simulation_mode(simulate) {}
