@@ -30,7 +30,7 @@ architecture sim of create_pdu_sim is
             MAX_DATA_LEN  : integer := 128;     -- Maximum length of data field
             FCS_LEN       : integer := 2;       -- Length (number of nibble) of FCS field
             END_LEN       : integer := 2;       -- Length (number of nibble) of end field
-            PDU_MAX_LEN   : integer := 256      -- Maximum (number of nibble) PDU length -> impacte le NIBBLE_COUNT de nibble_crc
+            PDU_MAX_LEN   : integer := 256      -- Maximum (number of nibble) PDU length
         );
         port (
             clk             : in std_logic;                      -- Clock input
@@ -64,7 +64,7 @@ architecture sim of create_pdu_sim is
     constant clk_period : time := 10 ns;
 
     -- Test data
-    constant test_address : std_logic_vector(31 downto 0) := "11001100110011001100110011001100"; -- Example address
+    constant test_address : std_logic_vector(31 downto 0) := "10101010101010101010101010101010"; -- Example address
     constant test_data    : std_logic_vector(511 downto 0) := "00010010001101000101011001111000" & (511-32 downto 0 => '0'); -- Extend to 1024 bits
 
 begin
@@ -114,7 +114,7 @@ begin
         wait for clk_period;
 
         -- Test case 1: Create PDU with 8 bytes of data
-        protocol_selector <= "1010"; -- Example protocol selector
+        protocol_selector <= "0001"; -- Example protocol selector
         address <= test_address;
         data_in <= test_data;
         data_len <= 8; -- 8 bytes of data
@@ -124,7 +124,7 @@ begin
 
         -- Wait for PDU creation to complete
         wait until done = '1';
-
+        wait for 10*clk_period;
         -- Verify output
         --assert pdu_len = 17  -- 3 sync + 1 protocol + 4 address + 8 data + 1 FCS + 1 end
         --report "Test 1 passed: Correct PDU length."

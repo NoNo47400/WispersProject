@@ -22,15 +22,11 @@ end nibble_crc_sim;
 architecture sim of nibble_crc_sim is
     -- Component declaration for the nibble_crc
     component nibble_crc
-        generic (
-            NIBBLE_COUNT : integer := 8
-        );
         port (
             clk        : in std_logic;
             reset      : in std_logic;
             start      : in std_logic;
             nibble_in  : in std_logic_vector(3 downto 0);
-            nibble_number : in integer range 0 to NIBBLE_COUNT;       -- Number of nibbles to process
             crc_out    : out std_logic_vector(7 downto 0);
             done       : out std_logic
         );
@@ -41,7 +37,6 @@ architecture sim of nibble_crc_sim is
     signal reset      : std_logic := '0';
     signal start      : std_logic := '0';
     signal nibble_in  : std_logic_vector(3 downto 0) := (others => '0');
-    signal nibble_number : integer := 8; -- Number of nibbles to process
     signal crc_out    : std_logic_vector(7 downto 0);
     signal done       : std_logic;
 
@@ -64,7 +59,6 @@ begin
             reset => reset,
             start => start,
             nibble_in => nibble_in,
-            nibble_number => nibble_number,
             crc_out => crc_out,
             done => done
         );
@@ -90,8 +84,6 @@ begin
         wait for clk_period;
 
         -- Test with 8 nibbles
-        nibble_number <= 8;
-        
         -- Apply the input data sequentially
         start <= '1';
         wait for clk_period;
@@ -117,8 +109,6 @@ begin
         wait for clk_period;
         
         -- Test with 8 nibbles
-        nibble_number <= 4;
-        
         -- Apply the input data sequentially
         start <= '1';
         wait for clk_period;
@@ -140,8 +130,6 @@ begin
         wait for clk_period;
         
         -- Test with 8 nibbles
-        nibble_number <= 16;
-        
         -- Apply the input data sequentially
         start <= '1';
         wait for clk_period;
