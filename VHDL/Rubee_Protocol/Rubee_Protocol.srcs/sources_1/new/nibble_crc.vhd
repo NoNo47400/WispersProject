@@ -5,7 +5,7 @@
 -- Create Date: 11/20/2024 02:00:00 PM
 -- Design Name: Rubee_v0.1
 -- Module Name: nibble_crc - Behavioral
--- Project Name: Wisper
+-- Project Name: Wispers
 -- Target Devices: Basys3
 -- Description: 
 --   This module computes the CRC for nibbles (4-bit data) as part of the Rubee Protocol.
@@ -17,15 +17,11 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity nibble_crc is
-    generic (
-        NIBBLE_COUNT : integer := 8  -- Number of nibbles in the input data
-    );
     port (
         clk        : in std_logic;                             -- Clock input
         reset      : in std_logic;                             -- Reset signal
         start      : in std_logic;                             -- Start signal
         nibble_in  : in std_logic_vector(3 downto 0);          -- 4-bit nibble input
-        nibble_number : in integer range 0 to NIBBLE_COUNT;       -- Number of nibbles to process
         crc_out    : out std_logic_vector(7 downto 0);         -- 8-bit CRC output
         done       : out std_logic                             -- Done signal
     );
@@ -43,7 +39,6 @@ architecture behavioral of nibble_crc is
 
     -- Internal signals
     signal crc        : std_logic_vector(7 downto 0) := (others => '0'); -- CRC register
-    signal nibble_idx : integer range 0 to NIBBLE_COUNT - 1 := 0;         -- Nibble index
     signal active     : std_logic := '0';                                -- Active flag
 
 begin
@@ -55,24 +50,19 @@ begin
             if reset = '1' then
                 -- Reset all internal signals
                 crc <= (others => '0');
-                nibble_idx <= 0;
                 active <= '0';
                 done <= '0';
             elsif start = '1' and active = '0' then
                 -- Start CRC calculation
                 active <= '1';
                 done <= '0';
-                nibble_idx <= 0;
                 crc <= (others => '0'); -- Initialize CRC
             elsif active = '1' then
-                if nibble_idx < nibble_number then
+                if start = '1' then
                 -- Calculate table index
                 index := to_integer(unsigned((crc(7 downto 4)) xor nibble_in));
                 -- Update CRC using table and left-shifted CRC
                 crc <= table(index) xor (crc(3 downto 0) & "0000");
-
-                -- Increment nibble index
-                nibble_idx <= nibble_idx + 1;
                 else
                     -- Complete CRC calculation
                     active <= '0';

@@ -1,1 +1,8 @@
 Rubee_Protocol.cache/
+*.bat
+*.tcl
+*.prj
+*.log
+*.wdb
+*.obj
+*.vdb
