@@ -1,0 +1,292 @@
+
+*** Running vivado
+    with args -log MODEM.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source MODEM.tcl
+
+
+
+****** Vivado v2024.1 (64-bit)
+  **** SW Build 5076996 on Wed May 22 18:37:14 MDT 2024
+  **** IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+  **** SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+  **** Start of session at: Sun Jan 26 23:51:01 2025
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source MODEM.tcl -notrace
+create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 555.711 ; gain = 201.371
+Command: read_checkpoint -auto_incremental -incremental D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/utils_1/imports/synth_1/Modulation.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/utils_1/imports/synth_1/Modulation.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top MODEM -part xc7a35tcpg236-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 29332
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1015.375 ; gain = 444.117
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'MODEM' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/MODEM.vhd:17]
+INFO: [Synth 8-3491] module 'Modulation' declared at 'D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Modulation.vhd:5' bound to instance 'MODU' of component 'Modulation' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/MODEM.vhd:48]
+INFO: [Synth 8-638] synthesizing module 'Modulation' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Modulation.vhd:19]
+INFO: [Synth 8-3491] module 'Carrier_generator' declared at 'D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Carrier_generator.vhd:5' bound to instance 'CARRIER_GEN' of component 'Carrier_generator' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Modulation.vhd:42]
+INFO: [Synth 8-638] synthesizing module 'Carrier_generator' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Carrier_generator.vhd:17]
+INFO: [Synth 8-256] done synthesizing module 'Carrier_generator' (0#1) [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Carrier_generator.vhd:17]
+INFO: [Synth 8-256] done synthesizing module 'Modulation' (0#1) [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Modulation.vhd:19]
+INFO: [Synth 8-3491] module 'Demodulation' declared at 'D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Demodulation.vhd:5' bound to instance 'DEMODU' of component 'Demodulation' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/MODEM.vhd:60]
+INFO: [Synth 8-638] synthesizing module 'Demodulation' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Demodulation.vhd:15]
+INFO: [Synth 8-3491] module 'FILTER' declared at 'D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/FILTER.vhd:5' bound to instance 'FILTER_LP' of component 'FILTER' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Demodulation.vhd:34]
+INFO: [Synth 8-638] synthesizing module 'FILTER' [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/FILTER.vhd:14]
+INFO: [Synth 8-256] done synthesizing module 'FILTER' (0#1) [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/FILTER.vhd:14]
+INFO: [Synth 8-256] done synthesizing module 'Demodulation' (0#1) [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Demodulation.vhd:15]
+INFO: [Synth 8-256] done synthesizing module 'MODEM' (0#1) [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/MODEM.vhd:17]
+WARNING: [Synth 8-6014] Unused sequential element Counter_reg was removed.  [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Carrier_generator.vhd:110]
+WARNING: [Synth 8-6014] Unused sequential element Clock_divided_reg was removed.  [D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/sources_1/new/Carrier_generator.vhd:114]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1127.977 ; gain = 556.719
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1127.977 ; gain = 556.719
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35tcpg236-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1127.977 ; gain = 556.719
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a35tcpg236-1
+---------------------------------------------------------------------------------
+Start Preparing Guide Design
+---------------------------------------------------------------------------------
+CRITICAL WARNING: [Synth 8-6895] The reference checkpoint D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.srcs/utils_1/imports/synth_1/Modulation.dcp is not suitable for use with incremental synthesis for this design. Please regenerate the checkpoint for this design with -incremental_synth switch in the same Vivado session that synth_design has been run. Synthesis will continue with the default flow
+---------------------------------------------------------------------------------
+Finished Doing Graph Differ : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1127.977 ; gain = 556.719
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Preparing Guide Design : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1127.977 ; gain = 556.719
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'current_state_reg' in module 'Carrier_generator'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+           first_quarter |                               00 |                               00
+          second_quarter |                               01 |                               01
+           third_quarter |                               10 |                               10
+           forth_quarter |                               11 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'current_state_reg' using encoding 'sequential' in module 'Carrier_generator'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1127.977 ; gain = 556.719
+---------------------------------------------------------------------------------
+
+
+Incremental Synthesis Report Summary:
+
+1. Incremental synthesis run: no
+
+   Reason for not running incremental synthesis : 
+
+
+INFO: [Synth 8-7130] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	  32 Input   13 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 3     
++---Registers : 
+	               15 Bit    Registers := 1     
+	                8 Bit    Registers := 37    
+	                1 Bit    Registers := 3     
++---Muxes : 
+	   2 Input    8 Bit        Muxes := 2     
+	   4 Input    2 Bit        Muxes := 2     
+	   4 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+INFO: [Device 21-9227] Part: xc7a35tcpg236-1 does not have CEAM library.
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP MODU/Counter_sig1, operation Mode is: (A:0xc350)*B.
+DSP Report: operator MODU/Counter_sig1 is absorbed into DSP MODU/Counter_sig1.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+ Sort Area is  MODU/Counter_sig1_0 : 0 0 : 303 303 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+ROM: Preliminary Mapping Report
++------------------+-----------------------------------+---------------+----------------+
+|Module Name       | RTL Object                        | Depth x Width | Implemented As | 
++------------------+-----------------------------------+---------------+----------------+
+|Carrier_generator | carrier_table[0]                  | 256x8         | LUT            | 
+|MODEM             | MODU/CARRIER_GEN/carrier_table[0] | 256x8         | LUT            | 
++------------------+-----------------------------------+---------------+----------------+
+
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++------------+--------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping  | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+--------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Modulation  | (A:0xc350)*B | 8      | 16     | -      | -      | 24     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++------------+--------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+DSP Final Report (the ' indicates corresponding REG is set)
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Modulation  | A*B         | 8      | 16     | -      | -      | 24     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+--------+------+
+|      |Cell    |Count |
++------+--------+------+
+|1     |BUFG    |     1|
+|2     |CARRY4  |    61|
+|3     |DSP48E1 |     1|
+|4     |LUT1    |     6|
+|5     |LUT2    |    22|
+|6     |LUT3    |   153|
+|7     |LUT4    |   114|
+|8     |LUT5    |    15|
+|9     |LUT6    |    45|
+|10    |MUXF7   |     5|
+|11    |FDCE    |   276|
+|12    |FDPE    |    15|
+|13    |FDRE    |    39|
+|14    |IBUF    |    12|
+|15    |OBUF    |     1|
++------+--------+------+
+
+Report Instance Areas: 
++------+----------------+------------------+------+
+|      |Instance        |Module            |Cells |
++------+----------------+------------------+------+
+|1     |top             |                  |   766|
+|2     |  DEMODU        |Demodulation      |   593|
+|3     |    FILTER_LP   |FILTER            |   584|
+|4     |  MODU          |Modulation        |   159|
+|5     |    CARRIER_GEN |Carrier_generator |    80|
++------+----------------+------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 1 critical warnings and 3 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+Synthesis Optimization Complete : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1324.676 ; gain = 753.418
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1329.531 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 67 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1419.988 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: d50a7247
+INFO: [Common 17-83] Releasing license: Synthesis
+32 Infos, 3 Warnings, 1 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:15 ; elapsed = 00:00:17 . Memory (MB): peak = 1419.988 ; gain = 857.359
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1419.988 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.runs/synth_1/MODEM.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file MODEM_utilization_synth.rpt -pb MODEM_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sun Jan 26 23:51:28 2025...

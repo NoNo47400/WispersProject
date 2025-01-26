@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2024.1 (64-bit)
+# SW Build 5076996 on Wed May 22 18:37:14 MDT 2024
+# IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+# SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+# Start of session at: Sun Jan 26 23:51:01 2025
+# Process ID: 3680
+# Current directory: D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.runs/synth_1
+# Command line: vivado.exe -log MODEM.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source MODEM.tcl
+# Log file: D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.runs/synth_1/MODEM.vds
+# Journal file: D:/VIVADO_projects/MODEM_WISPER/MODEM_WISPER.runs/synth_1\vivado.jou
+# Running On        :BOOK-SA9USV77NK
+# Platform          :Windows Server 2016 or Windows 10
+# Operating System  :26100
+# Processor Detail  :12th Gen Intel(R) Core(TM) i7-1260P
+# CPU Frequency     :2496 MHz
+# CPU Physical cores:12
+# CPU Logical cores :16
+# Host memory       :16773 MB
+# Swap memory       :1086 MB
+# Total Virtual     :17860 MB
+# Available Virtual :4111 MB
+#-----------------------------------------------------------
+source MODEM.tcl -notrace

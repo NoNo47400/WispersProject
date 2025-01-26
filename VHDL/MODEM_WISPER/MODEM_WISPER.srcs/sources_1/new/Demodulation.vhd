@@ -8,7 +8,7 @@ entity Demodulation is
     RST_inp : in std_logic;
     MODULATED_inp : in std_logic_vector(7 downto 0);
     
-    DEMODULATED_outp : out std_logic
+    DEMODULATED_outp : out std_logic :='0'
   );
 end Demodulation;
 
@@ -37,7 +37,7 @@ FILTER_LP : FILTER
     RST_inp => RST_inp,                 
     SIGNAL_inp => Modulated_sig,
      
-    SIGNAL_outp => open
+    SIGNAL_outp => Modulated_filtered_sig
     );
 
 DEMODULATE : process(CLK_inp, RST_inp)
@@ -45,15 +45,20 @@ DEMODULATE : process(CLK_inp, RST_inp)
         if(RST_inp = '1')then
             Demodulated_sig <= '0';
         elsif(CLK_inp'event and CLK_inp = '1')then
+            --ABSOLUTE SIGNAL PROCESS
             if(MODULATED_inp < x"80")then
                 Modulated_sig <= not MODULATED_inp;
             else
                 Modulated_sig <= MODULATED_inp;
             end if;
+            --DEMODU PROCESS
+            if(Modulated_filtered_sig < x"24") then
+                Demodulated_sig <= '0';
+            else 
+                Demodulated_sig <= '1';
+           end if;
         end if;
     end process;
-
-Demodulated_sig <= '1' when (Modulated_sig > x"80") else '0';
 
 -- OUTPUTS MAPPING
 DEMODULATED_outp <= Demodulated_sig; 

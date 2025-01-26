@@ -11,6 +11,7 @@ entity Carrier_generator is
   CARRIER_outp_2 : out std_logic_vector(7 downto 0) --SMALL CARRIER
   );
   
+  
 end Carrier_generator;
 
 architecture Behavioral of Carrier_generator is
@@ -39,8 +40,8 @@ constant carrier_table : sin_table := (
     x"F0", x"F1", x"F2", x"F3", x"F3", x"F4", x"F5", x"F6", 
     x"F7", x"F8", x"F8", x"F9", x"FA", x"FA", x"FB", x"FB", 
     x"FC", x"FC", x"FD", x"FD", x"FD", x"FE", x"FE", x"FE", 
-    x"FE", x"FE", x"FE", x"FE", x"FE" --181 valeurs
-);
+    x"FE", x"FE", x"FE", x"FE", x"FE" --181 valeurs (on lit deux fois le tableau : 362 valeurs mais on ne lit qu'une fois les deux extremums : -2 = 360
+); 
 
 type states is (first_quarter, second_quarter, third_quarter, forth_quarter);
 signal current_state : states := first_quarter;
@@ -58,37 +59,37 @@ signal integ : integer;
 begin
 
 -- CARRIER 1 GENERATING (BIG)
-Read_table_1 : process (Clock_divided, RST_inp)
+Read_table_1 : process (CLK_inp, RST_inp)
     begin
         if(RST_inp = '1') then
             Index <= x"5A";
             current_state <= first_quarter;
             
-        elsif(Clock_divided'event and Clock_divided = '1') then
+        elsif(CLK_inp'event and CLK_inp = '1') then
         
             case current_state is
             
                 when first_quarter =>
                     Index <= Index + 1 ;
-                    if(Index = x"B3") then
+                    if(Index = x"B3") then --Index B4 is the max value so we change at B3 to prevent index from going out of range
                         current_state <= second_quarter;
                     end if;
                 
                 when second_quarter =>
                     Index <= Index - 1 ;
-                    if(Index = x"5A") then
+                    if(Index = x"5B") then --Index 5A is the mean value so we detect at 5B while decreasing
                         current_state <= third_quarter;
                     end if;
                 
                 when third_quarter =>
                     Index <= Index - 1 ;
-                    if(Index = x"01") then
+                    if(Index = x"01") then --Index 00 is the bottom value so we detect at 01
                         current_state <= forth_quarter;
                     end if;
                 
                 when forth_quarter =>
                     Index <= Index + 1 ;
-                    if(Index = x"5A") then
+                    if(Index = x"59") then --Index 5A is the mean value so we detect at 59 while increasing
                         current_state <= first_quarter;
                     end if;
                 
@@ -99,7 +100,7 @@ Read_table_1 : process (Clock_divided, RST_inp)
 Carrier_sig_1 <= carrier_table(TO_INTEGER(Index));
 
 -- CARRIER 2 GENERATING (SMALL)
-integ <= to_integer(unsigned(Carrier_sig_1)) / 16 + 120; --Conversion from vector to int to compute the small carrier. We divide by 12 (min 10 cd Rubee, then we add an offset to center the signal around 128)
+integ <= to_integer(unsigned(Carrier_sig_1)) / 16 + 120; --Division by 16 (min 10 RuBee) and adding of 120 offset to center the signal (0 value is coded by 128, 128/16 is 8 and 128-8=120)
 Carrier_sig_2 <= std_logic_vector(to_unsigned(integ, Carrier_sig_2'length)); --Conversion back into vector
 
 -- CLOCK DIVIDER
