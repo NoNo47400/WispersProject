@@ -1,0 +1,18 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"1.25",
+   "Default View_TopLeft":"-419,-174",
+   "DisplayPinAutomationMissing":"1",
+   "DisplayPinsOfHiddenNets":"1",
+   "DisplayTieOff":"1",
+   "ExpandedHierarchyInLayout":"",
+   "Interfaces View_ScaleFactor":"0.8",
+   "Interfaces View_TopLeft":"-515,-194",
+   "guistr":"# # String gsaved with Nlview 7.7.1 2023-07-26 3bc4126617 VDI=43 GEI=38 GUI=JA:21.0
+#  -string -flagsOSRD
+preplace inst Modulation_0 -pg 1 -lvl 1 -x 10 -y 10 -defaultsOSRD
+levelinfo -pg 1 -190 10 200
+pagesize -pg 1 -db -bbox -sgen -190 -90 300 160
+"
+}
+
