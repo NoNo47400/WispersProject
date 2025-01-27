@@ -4,11 +4,11 @@
 -- 
 -- Create Date: 11/20/2024 02:30:00 PM
 -- Design Name: Rubee_v0.1
--- Module Name: nibble_crc_sim - Behavioral
+-- Module Name: nibble_fcs_sim - Behavioral
 -- Project Name: Wisper
 -- Target Devices: Basys3
 -- Description: 
---   This module simulates the nibble_crc module to verify its functionality.
+--   This module simulates the nibble_fcs module to verify its functionality.
 -- 
 ----------------------------------------------------------------------------------
 
@@ -16,12 +16,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity nibble_crc_sim is
-end nibble_crc_sim;
+entity nibble_fcs_sim is
+end nibble_fcs_sim;
 
-architecture sim of nibble_crc_sim is
-    -- Component declaration for the nibble_crc
-    component nibble_crc
+architecture sim of nibble_fcs_sim is
+    -- Component declaration for the nibble_fcs
+    component nibble_fcs
         port (
             clk        : in std_logic;
             reset      : in std_logic;
@@ -52,8 +52,8 @@ architecture sim of nibble_crc_sim is
     -- Simulation variables
     signal data_index : integer := 0;
 begin
-    -- Instantiate the nibble_crc component
-    uut: nibble_crc
+    -- Instantiate the nibble_fcs component
+    uut: nibble_fcs
         port map (
             clk => clk,
             reset => reset,

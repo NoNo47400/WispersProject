@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 11/20/2024 02:00:00 PM
 -- Design Name: Rubee_v0.1
--- Module Name: nibble_crc - Behavioral
+-- Module Name: nibble_fcs - Behavioral
 -- Project Name: Wispers
 -- Target Devices: Basys3
 -- Description: 
@@ -16,7 +16,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity nibble_crc is
+entity nibble_fcs is
     port (
         clk        : in std_logic;                             -- Clock input
         reset      : in std_logic;                             -- Reset signal
@@ -25,9 +25,9 @@ entity nibble_crc is
         crc_out    : out std_logic_vector(7 downto 0);         -- 8-bit CRC output
         done       : out std_logic                             -- Done signal
     );
-end nibble_crc;
+end nibble_fcs;
 
-architecture behavioral of nibble_crc is
+architecture behavioral of nibble_fcs is
     -- Lookup table
     type table_type is array(0 to 15) of std_logic_vector(7 downto 0);
     constant table : table_type := (

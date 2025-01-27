@@ -42,6 +42,7 @@ architecture sim of create_pdu_sim is
             data_in         : in std_logic_vector(MAX_DATA_LEN*4-1 downto 0); -- Input data
             data_len        : in std_logic_vector(7 downto 0); -- Length of input data
             pdu_out         : out std_logic_vector(PDU_MAX_LEN*4-1 downto 0); -- Output PDU
+            pdu_out_reversed : out std_logic_vector(0 to PDU_MAX_LEN*4-1); -- Output PDU reversed
             pdu_len         : out std_logic_vector(7 downto 0); -- Length of the created PDU
             done            : out std_logic                      -- Done signal
         );
@@ -57,6 +58,7 @@ architecture sim of create_pdu_sim is
     signal data_in          : std_logic_vector(511 downto 0) := (others => '0');
     signal data_len         : std_logic_vector(7 downto 0):= (others => '0');
     signal pdu_out          : std_logic_vector(1023 downto 0); -- Match PDU_MAX_LEN * 8
+    signal pdu_out_reversed : std_logic_vector(0 to 1023); -- Match PDU_MAX_LEN * 8
     signal pdu_len          : std_logic_vector(7 downto 0);
     signal done             : std_logic;
 
@@ -89,6 +91,7 @@ begin
             data_in => data_in,
             data_len => data_len,
             pdu_out => pdu_out,
+            pdu_out_reversed => pdu_out_reversed,
             pdu_len => pdu_len,
             done => done
         );

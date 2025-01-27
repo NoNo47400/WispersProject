@@ -26,7 +26,8 @@ architecture Behavioral of RuBee_sim is
         Port (
             clk     : in std_logic;    -- Clock signal
             reset   : in std_logic;    -- Reset signal
-            start   : in std_logic    -- Start signal
+            start   : in std_logic;    -- Start signal
+            pdu_out : out std_logic_vector(127 downto 0)
         );
     end component;
 
@@ -34,7 +35,7 @@ architecture Behavioral of RuBee_sim is
     signal clk     : std_logic := '0';
     signal reset   : std_logic := '0';
     signal start   : std_logic := '0';
-
+    signal pdu_out : std_logic_vector(127 downto 0);
     -- Clock period definition
     constant CLK_PERIOD : time := 10 ns;
 
@@ -45,7 +46,8 @@ begin
         port map (
             clk     => clk,
             reset   => reset,
-            start   => start
+            start   => start,
+            pdu_out => pdu_out
         );
 
     -- Clock generation process

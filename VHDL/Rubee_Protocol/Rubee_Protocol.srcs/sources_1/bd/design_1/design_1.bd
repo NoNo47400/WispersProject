@@ -1,0 +1,148 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0xDD849949D568BD8F",
+      "device": "xc7a35tcpg236-1",
+      "gen_directory": "../../../../Rubee_Protocol.gen/sources_1/bd/design_1",
+      "name": "design_1",
+      "rev_ctrl_bd_flag": "RevCtrlBdOff",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2024.1",
+      "validated": "true"
+    },
+    "design_tree": {
+      "RuBee_0": "",
+      "vio_0": ""
+    },
+    "ports": {
+      "clk_0": {
+        "type": "clk",
+        "direction": "I",
+        "parameters": {
+          "ASSOCIATED_RESET": {
+            "value": "reset_0",
+            "value_src": "default"
+          },
+          "CLK_DOMAIN": {
+            "value": "design_1_clk_0",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
+          }
+        }
+      },
+      "reset_0": {
+        "type": "rst",
+        "direction": "I",
+        "parameters": {
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default"
+          }
+        }
+      },
+      "start_0": {
+        "direction": "I"
+      }
+    },
+    "components": {
+      "RuBee_0": {
+        "vlnv": "xilinx.com:module_ref:RuBee:1.0",
+        "ip_revision": "1",
+        "xci_name": "design_1_RuBee_0_0",
+        "xci_path": "ip\\design_1_RuBee_0_0\\design_1_RuBee_0_0.xci",
+        "inst_hier_path": "RuBee_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "RuBee",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "reset",
+                "value_src": "constant"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_clk_0",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "reset": {
+            "type": "rst",
+            "direction": "I"
+          },
+          "start": {
+            "direction": "I"
+          },
+          "pdu_out": {
+            "direction": "O",
+            "left": "127",
+            "right": "0"
+          }
+        }
+      },
+      "vio_0": {
+        "vlnv": "xilinx.com:ip:vio:3.0",
+        "ip_revision": "25",
+        "xci_name": "design_1_vio_0_1",
+        "xci_path": "ip\\design_1_vio_0_1\\design_1_vio_0_1.xci",
+        "inst_hier_path": "vio_0",
+        "parameters": {
+          "C_NUM_PROBE_OUT": {
+            "value": "0"
+          }
+        }
+      }
+    },
+    "nets": {
+      "RuBee_0_pdu_out": {
+        "ports": [
+          "RuBee_0/pdu_out",
+          "vio_0/probe_in0"
+        ]
+      },
+      "clk_0_1": {
+        "ports": [
+          "clk_0",
+          "vio_0/clk",
+          "RuBee_0/clk"
+        ]
+      },
+      "reset_0_1": {
+        "ports": [
+          "reset_0",
+          "RuBee_0/reset"
+        ]
+      },
+      "start_0_1": {
+        "ports": [
+          "start_0",
+          "RuBee_0/start"
+        ]
+      }
+    }
+  }
+}
