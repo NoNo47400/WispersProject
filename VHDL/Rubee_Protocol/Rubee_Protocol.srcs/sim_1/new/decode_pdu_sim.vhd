@@ -15,19 +15,19 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity decode_pdu_tb is
-end decode_pdu_tb;
+entity decode_request_pdu_tb is
+end decode_request_pdu_tb;
 
-architecture Behavioral of decode_pdu_tb is
+architecture Behavioral of decode_request_pdu_tb is
     -- Component declaration for the Unit Under Test (UUT)
-    component decode_pdu
+    component decode_request_pdu
         Port (
             clk             : in  STD_LOGIC;
             rst             : in  STD_LOGIC;
             bit_in          : in  STD_LOGIC;
             header_validity : in  STD_LOGIC;
             
-            pdu_out         : out STD_LOGIC_VECTOR(7 downto 0);
+            pdu_out         : out STD_LOGIC_VECTOR(127 downto 0);
             pdu_validity    : out STD_LOGIC
         );
     end component;
@@ -38,7 +38,7 @@ architecture Behavioral of decode_pdu_tb is
     signal bit_in          : STD_LOGIC := '0';
     signal header_validity : STD_LOGIC := '0';
 
-    signal pdu_out         : STD_LOGIC_VECTOR(7 downto 0);
+    signal pdu_out         : STD_LOGIC_VECTOR(127 downto 0);
     signal pdu_validity    : STD_LOGIC;
 
     -- Clock period definition
@@ -46,7 +46,7 @@ architecture Behavioral of decode_pdu_tb is
 
 begin
     -- Instantiate the Unit Under Test (UUT)
-    uut: decode_pdu
+    uut: decode_request_pdu
         Port map (
             clk => clk,
             rst => rst,
@@ -77,6 +77,12 @@ begin
             "1010", "1010", "1010", "1010", "0101", "0101", "0101", "0101",
             "0101", "0101", "0101", "0101", "1010", "0010"
         );
+        constant pdu_data2 : pdu_array := (
+            "0000", "0000", "0101", "0001", "1010", "1010", "1010", "1010",
+            "1010", "1010", "1010", "1010", "0101", "0101", "0101", "0101",
+            "0101", "0101", "0101", "0101", "1010", "0010"
+        );
+        
     begin
         -- Reset the system
         rst <= '1';
@@ -98,8 +104,30 @@ begin
         end loop;
 
         -- Wait to observe results
-        wait for 20 * CLK_PERIOD;
+        wait until pdu_validity = '1';
+        
+        wait for CLK_PERIOD*5;
+        
+        -- Reset the system
+        rst <= '1';
+        wait for 2 * CLK_PERIOD;
+        rst <= '0';
+        wait for 2 * CLK_PERIOD;
 
+        -- Simulate a valid header detection
+        header_validity <= '1';
+        wait for CLK_PERIOD;
+        header_validity <= '0';
+
+        -- Send PDU bits
+        for i in pdu_data2'range loop
+            for j in 3 downto 0 loop
+                bit_in <= pdu_data2(i)(j);
+                wait for CLK_PERIOD;
+            end loop;
+        end loop;
+        
+        wait for CLK_PERIOD * 20;
         -- Finish simulation
         wait;
     end process;
