@@ -43,6 +43,7 @@ begin
             else
                 case current_state is
                     when IDLE =>
+                        done <= '0';
                         if start = '1' then
                             -- Initialisation pour le démarrage de l'encodage
                             current_state <= ENCODING;
@@ -79,7 +80,7 @@ begin
                         else
                             -- Fin de l'encodage
                             current_state <= DONE_STATE;
-                            pdu_len_out <= pdu_len_in * 2;
+                            pdu_len_out <= pdu_len_in;
                         end if;
 
                     when DONE_STATE =>
